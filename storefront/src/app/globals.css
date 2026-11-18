@@ -1,0 +1,102 @@
+@import "tailwindcss";
+@import "@repo/shared/styles/tokens.css";
+
+@theme {
+  /* Fonts (wired from next/font CSS variables in layout.tsx) */
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-poppins), "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-menu: var(--font-archivo), "Archivo", ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid type scale (PLAN.md §4.2) */
+  --text-display-2xl: clamp(3.5rem, 2rem + 6vw, 7rem);
+  --text-display-2xl--line-height: 0.95;
+  --text-display-xl: clamp(2.5rem, 1.6rem + 3.6vw, 4.75rem);
+  --text-display-xl--line-height: 1;
+  --text-display-lg: clamp(2rem, 1.4rem + 2.2vw, 3.25rem);
+  --text-display-lg--line-height: 1.05;
+  --text-display-md: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem);
+  --text-display-md--line-height: 1.1;
+  --text-menu: clamp(2.5rem, 1.2rem + 4.6vw, 4.5rem);
+  --text-menu--line-height: 1;
+  --text-menu--letter-spacing: -0.03em;
+
+  /* Layout */
+  --container-site: 1440px;
+  --spacing-gutter: clamp(1.25rem, 0.8rem + 1.6vw, 2.5rem);
+  --spacing-section: clamp(4rem, 2.5rem + 6vw, 8.5rem);
+  --spacing-header: 4.25rem;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+  }
+
+  ::selection {
+    background-color: var(--primary);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary-strong);
+    outline-offset: 3px;
+  }
+
+  /* Lenis smooth scroll */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility container-site {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-site);
+  padding-inline: var(--spacing-gutter);
+}
+
+@utility text-balance-pretty {
+  text-wrap: balance;
+}

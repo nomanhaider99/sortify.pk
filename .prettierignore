@@ -1,0 +1,10 @@
+node_modules
+.next
+dist
+coverage
+.pglite
+pnpm-lock.yaml
+packages/db/drizzle/meta
+*.png
+*.webp
+PLAN.md

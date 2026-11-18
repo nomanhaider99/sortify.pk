@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@import "@repo/shared/styles/tokens.css";
+
+/* Class-based dark mode (toggle stored in localStorage, applied before paint). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --accent-ink: #4f6b3f;
+  color-scheme: light;
+}
+
+/*
+ * Admin dark mode — derived from the brand palette (mirrors `darkColors` in @repo/shared/tokens).
+ * Buttons stay dark green (#4F6B3F) with off-white text; accents use sage.
+ */
+.dark {
+  --primary: #9caf88;
+  --primary-strong: #4f6b3f;
+  --primary-strong-hover: #3f5a34;
+  --primary-soft: #26321f;
+  --bg: #141a12;
+  --surface: #1b2318;
+  --surface-muted: #222c1e;
+  --ink: #eef1e8;
+  --ink-muted: #a7b09e;
+  --border: #2c3727;
+  --danger: #e07a66;
+  --warning: #e0a94a;
+  --warning-ink: #e0a94a;
+  --success: #9caf88;
+  /* Accent text colour: dark green on light, sage on dark. */
+  --accent-ink: #9caf88;
+  color-scheme: dark;
+}
+
+@theme {
+  --font-sans: var(--font-dm-sans), "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-accent-ink: var(--accent-ink);
+  --radius-card: 0.875rem;
+  --radius-control: 0.5rem;
+  --shadow-card: 0 1px 2px rgb(31 42 26 / 0.04), 0 4px 16px -8px rgb(31 42 26 / 0.08);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent-ink);
+    outline-offset: 2px;
+  }
+}

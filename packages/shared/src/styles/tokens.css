@@ -1,0 +1,51 @@
+/*
+ * Brand design tokens (PLAN.md §4.1) shared by storefront and admin.
+ * Import AFTER `@import "tailwindcss";`. Values mirror `src/tokens.ts` (kept in sync by tests).
+ *
+ * Contrast rule: never put `--bg` text on `--primary` (sage). On sage use `--ink`.
+ * `--bg` / `--on-strong` text belongs on `--primary-strong`, dark photo overlays, or `--menu-bg`.
+ */
+:root {
+  --primary: #9caf88;
+  --primary-strong: #4f6b3f;
+  --primary-strong-hover: #3f5a34;
+  --primary-soft: #e4ebdc;
+  --bg: #f7f5ef;
+  --surface: #ffffff;
+  --surface-muted: #f1eee6;
+  --ink: #1f2a1a;
+  --ink-muted: #5e6659;
+  --border: #e2ded3;
+  --menu-bg: #141414;
+  --menu-ink-muted: #a3a3a3;
+  --danger: #b3402f;
+  --warning: #c98a1b;
+  --warning-ink: #8a5d0e;
+  --success: #4f6b3f;
+  /* Text on --primary-strong, dark overlays and the menu. Always off-white. */
+  --on-strong: #f7f5ef;
+
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-strong-hover: var(--primary-strong-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-border: var(--border);
+  --color-menu-bg: var(--menu-bg);
+  --color-menu-ink-muted: var(--menu-ink-muted);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-warning-ink: var(--warning-ink);
+  --color-success: var(--success);
+  --color-on-strong: var(--on-strong);
+
+  --ease-out-expo: var(--ease-out-expo);
+}

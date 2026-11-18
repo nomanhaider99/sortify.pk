@@ -5,6 +5,7 @@ import { useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -20,7 +21,7 @@ const LenisContext = createContext<RefObject<Lenis | null> | null>(null);
  */
 export function useLenis(): () => Lenis | null {
   const ref = useContext(LenisContext);
-  return () => ref?.current ?? null;
+  return useCallback(() => ref?.current ?? null, [ref]);
 }
 
 /** Site-wide Lenis smooth scroll. Disabled under `prefers-reduced-motion`. */

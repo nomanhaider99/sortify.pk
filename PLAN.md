@@ -441,10 +441,10 @@ Scripts at root: `pnpm dev` (both apps), `pnpm dev:store`, `pnpm dev:admin`, `pn
 - [x] Shared query helpers (product listing, product by slug, order by number)
 
 ### M2 — Storefront Shell
-- [ ] Announcement marquee, transparent→solid hiding header, hamburger morph (layout matches `ref-1.png`)
-- [ ] **Full-page menu overlay** per `ref-2.png` (data-driven, animated, accessible); compare against reference
-- [ ] Footer, page transitions, smooth scroll, 404/error/loading states
-- [ ] Search overlay (basic)
+- [x] Announcement marquee, transparent→solid hiding header, hamburger morph (layout matches `ref-1.png`)
+- [x] **Full-page menu overlay** per `ref-2.png` (data-driven, animated, accessible); compare against reference
+- [x] Footer, page transitions, smooth scroll, 404/error/loading states
+- [x] Search overlay (basic)
 
 ### M3 — Home Page
 - [ ] Majestic-style hero per `ref-3.png` (parallax, text mask reveal, settings-driven)
@@ -514,6 +514,14 @@ _(Claude Code: record any decision that deviates from or extends this plan.)_
 | 2026-11-18 | Seed images are **generated placeholders** (flat furniture silhouettes / interior, SVG → WebP via sharp) committed in `storefront/public/seed/`; admin loads them via `STOREFRONT_URL` | Plan forbids hotlinking/scraping; real photos can replace files 1:1 by name. |
 | 2026-11-18 | `pnpm db:seed` wipes and reloads in development; with `NODE_ENV=production` it never wipes and only ensures system roles, default settings and the Owner. Demo users (dev only) use password `DemoPass!123` | Safe first-run in prod; repeatable demo data in dev. |
 | 2026-11-18 | Storefront header follows **ref-1** (centered hamburger + full-page menu); only the marquee bar and the transparent-over-image feel come from ref-3 (its inline nav is not used) | §5.1 specifies the ref-1 header. |
+| 2026-11-18 | Menu overlay (ref-2 is cropped) completed as: left column is full height with links at the top and socials + copyright pinned to the bottom; right panel scrolls independently; the panel is open by default with `CATEGORIES ›` as its owner link (like `FEATURES ›` in the ref), and toggles it. Left column widened from the ref's ~33% to ~40% (min 480px) so `CATEGORIES ›` fits at the menu font size | Our longest link ("CATEGORIES") is longer than the ref's ("FEATURES"); without widening it was clipped. |
+| 2026-11-18 | Menu/search overlays use **Radix Dialog** (focus trap, Esc, scroll lock, aria) + Motion; focus is returned to the header toggle explicitly (`onCloseAutoFocus`), and Lenis is stopped while an overlay is open | Toggles live outside the dialog, so Radix's default focus return does not apply. |
+| 2026-11-18 | Header chrome = one fixed container (announcement bar + header): bar slides away once scrolled, whole chrome hides on scroll down past 160px and returns on scroll up; transparent/light only on hero routes (`HERO_ROUTES`), other pages get a `--shell-offset` top padding. Announcement dismissal is per browser session | Matches §5.1 behaviour without layout shift. |
+| 2026-11-18 | Links to pages from later milestones go through `lib/routes.ts` (cast to `Route` for typed routes) and show the storefront 404 until built. Known: Next 16 segment-prefetch responses for not-yet-existing routes stay open in the browser (pages work; only "network idle" never fires) — resolves as M4–M6 add the routes | Avoids scattering casts; documents the temporary prefetch quirk. |
+| 2026-11-18 | Rate limiting (search API, newsletter, later contact/review/track/checkout) uses an **in-memory fixed-window limiter** per server instance | Fine for the demo/single instance; a shared store (Upstash/Postgres) is listed in §14. |
+| 2026-11-18 | Shell data (announcement, store info, menu categories, featured products) is loaded once in the root layout via `unstable_cache` tagged `catalog`/`settings` (5-min revalidate) and falls back to defaults if the DB is unreachable | Keeps header/footer resilient; tags are what the M9 revalidation webhook will invalidate. |
+| 2026-11-18 | Added a minimal persisted Zustand cart store (lines + count + add tick) in M2 so the header badge is live; add/validation flows land in M5 | Header badge needs real state now. |
+| 2026-11-18 | `scripts/screenshot.mjs` (Playwright, falls back to installed Edge/Chrome) captures desktop + mobile states for reference comparison | Section 0.1 rule 5. |
 
 ## 14. Deferred / Future
 - Real payments (Stripe), real courier APIs, shipping labels
@@ -524,3 +532,4 @@ _(Claude Code: record any decision that deviates from or extends this plan.)_
 - Abandoned cart emails, inventory alerts via email/WhatsApp
 - Advanced analytics, CSV import
 - Trigram (`pg_trgm`) search index — enable on Neon (`CREATE EXTENSION pg_trgm`) when catalog size warrants fuzzy search
+- Shared-store rate limiter (Upstash/Postgres) for multi-instance deployments (current limiter is in-memory per instance)

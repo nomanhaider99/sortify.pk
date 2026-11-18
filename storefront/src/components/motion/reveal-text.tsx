@@ -19,6 +19,8 @@ type RevealTextProps = {
   as?: keyof typeof TAGS;
   className?: string;
   lineClassName?: string;
+  /** Per-segment classes (e.g. different sizes for each line). */
+  lineClassNames?: (string | undefined)[];
   /** Split a string into words (default) or keep it as a single line. */
   by?: "word" | "line";
   delay?: number;
@@ -36,6 +38,7 @@ export function RevealText({
   as = "p",
   className,
   lineClassName,
+  lineClassNames,
   by = "word",
   delay = 0,
   stagger = STAGGER.tight,
@@ -65,6 +68,7 @@ export function RevealText({
             "inline-block overflow-hidden pb-[0.12em] align-bottom",
             !isWords && "block",
             lineClassName,
+            lineClassNames?.[i],
           )}
         >
           <motion.span

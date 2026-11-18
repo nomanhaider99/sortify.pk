@@ -16,7 +16,7 @@
   --text-display-lg--line-height: 1.05;
   --text-display-md: clamp(1.625rem, 1.3rem + 1.2vw, 2.25rem);
   --text-display-md--line-height: 1.1;
-  --text-menu: clamp(2.5rem, 1.2rem + 4.6vw, 4.5rem);
+  --text-menu: clamp(2.5rem, 0.6rem + 3.4vw, 4rem);
   --text-menu--line-height: 1;
   --text-menu--letter-spacing: -0.03em;
 

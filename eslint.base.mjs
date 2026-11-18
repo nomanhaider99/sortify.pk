@@ -48,4 +48,10 @@ export const typescript = [
   },
 ];
 
-export default [ignores, js.configs.recommended, ...typescript, prettier];
+/** Repo scripts run in Node but pass callbacks into the browser (Playwright page.evaluate). */
+export const scripts = {
+  files: ["scripts/**/*.{js,mjs}"],
+  languageOptions: { globals: { ...globals.node, ...globals.browser } },
+};
+
+export default [ignores, js.configs.recommended, ...typescript, scripts, prettier];

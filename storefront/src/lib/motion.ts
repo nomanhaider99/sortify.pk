@@ -25,6 +25,7 @@ export const transition = (duration: number = DURATION.base, delay = 0): Transit
 export function fadeUp(reduced = false, distance = 28): Variants {
   return {
     hidden: { opacity: 0, y: reduced ? 0 : distance },
+    // (visible always sets y: 0, which also undoes any pre-hydration offset)
     visible: { opacity: 1, y: 0, transition: transition(DURATION.slow) },
   };
 }
@@ -36,8 +37,13 @@ export const fade: Variants = {
 
 /** Line-mask reveal: the child slides up from below its overflow-hidden parent. */
 export function maskReveal(reduced = false): Variants {
+  // Reduced variants still reset `y`: the server render can't know the user's preference, so the
+  // element may start translated by the full-motion `hidden` state before hydration.
   return reduced
-    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: transition(DURATION.base) } }
+    ? {
+        hidden: { opacity: 0, y: "0%" },
+        visible: { opacity: 1, y: "0%", transition: transition(DURATION.base) },
+      }
     : {
         hidden: { y: "110%" },
         visible: { y: "0%", transition: transition(DURATION.slow) },

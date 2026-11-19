@@ -27,6 +27,7 @@ export function Footer({ data }: { data: ShellData }) {
     {
       heading: "Help",
       links: [
+        { label: "About Us", href: routes.about },
         { label: "Contact", href: routes.contact },
         { label: "Track Order", href: routes.track },
         { label: "Shipping & Returns", href: routes.shipping },

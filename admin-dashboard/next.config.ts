@@ -23,7 +23,7 @@ const config: NextConfig = {
   serverExternalPackages: ["@node-rs/argon2"],
   images: {
     // Product media (seed placeholders) is served by the storefront.
-    remotePatterns: [new URL(`${storefrontUrl}/seed/**`)],
+    remotePatterns: [new URL(`${storefrontUrl}/images/**`)],
   },
   headers() {
     return Promise.resolve([{ source: "/:path*", headers: securityHeaders }]);

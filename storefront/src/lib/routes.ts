@@ -1,10 +1,6 @@
 import type { Route } from "next";
 
-/**
- * Central route map. Several pages ship in later milestones (catalog M4, cart M5, checkout and
- * tracking M6), so their hrefs are cast to `Route` here once instead of at every call site.
- * Until a page exists the link resolves to the storefront 404 page.
- */
+/** Central route map (typed routes are cast once here instead of at every call site). */
 export const routes = {
   home: "/" as Route,
   shop: "/products" as Route,
@@ -15,11 +11,15 @@ export const routes = {
   category: (slug: string) => `/categories/${slug}` as Route,
   product: (slug: string) => `/products/${slug}` as Route,
   search: (q: string) => `/products?q=${encodeURIComponent(q)}` as Route,
+  about: "/about" as Route,
   contact: "/contact" as Route,
   faq: "/contact#faq" as Route,
   shipping: "/contact#shipping" as Route,
   track: "/track" as Route,
   cart: "/cart" as Route,
+  checkout: "/checkout" as Route,
+  orderSuccess: (orderNumber: string) => `/order/${orderNumber}/success` as Route,
+  trackOrder: (orderNumber: string) => `/track/${orderNumber}` as Route,
   account: "/account" as Route,
 };
 

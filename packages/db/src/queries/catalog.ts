@@ -129,7 +129,7 @@ export async function listProducts(
   params: ProductListParams = {},
   db: Database = sharedDb,
 ): Promise<{ items: ProductCard[]; total: number }> {
-  const limit = Math.min(Math.max(params.limit ?? 12, 1), 48);
+  const limit = Math.min(Math.max(params.limit ?? 12, 1), 96);
   const offset = Math.max(params.offset ?? 0, 0);
   const where = listingWhere(params);
 

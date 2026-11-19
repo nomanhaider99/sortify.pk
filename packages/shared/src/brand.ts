@@ -3,9 +3,9 @@
  */
 export const BRAND = {
   name: "Majestic",
-  tagline: "Furniture & home, made to last",
+  tagline: "Home decor & kitchen essentials",
   description:
-    "Thoughtfully designed furniture made with premium materials — crafted for comfort and built to last.",
+    "Small tables, handmade decor and everyday kitchen essentials — thoughtfully made to be used and loved for years.",
   orderPrefix: "MJ",
   currency: "USD",
   localeLabel: "ENGLISH (USD $)",

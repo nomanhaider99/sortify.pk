@@ -20,6 +20,8 @@ export const buttonVariants = cva(
           "border-ink text-ink hover:bg-ink hover:text-bg focus-visible:outline-ink border bg-transparent",
         inverse:
           "bg-surface text-ink hover:bg-primary-strong hover:text-on-strong focus-visible:outline-on-strong",
+        "outline-inverse":
+          "border-on-strong/70 text-on-strong hover:bg-on-strong hover:text-ink focus-visible:outline-on-strong border bg-transparent",
         ghost: "text-ink hover:bg-primary-soft bg-transparent",
         link: "text-primary-strong tracking-normal normal-case underline-offset-4 hover:underline",
       },

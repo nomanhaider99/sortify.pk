@@ -2,21 +2,22 @@
 
 import { ShoppingBag } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import Link from "next/link";
-import { routes } from "@/lib/routes";
 import { useHydrated } from "@/lib/use-hydrated";
 import { selectCartCount, useCart } from "@/stores/cart";
 
-/** Cart icon with the small outlined count badge from ref-1; bumps when an item is added. */
+/** Cart icon with the small outlined count badge from ref-1; bumps on add and opens the drawer. */
 export function CartButton() {
   const hydrated = useHydrated();
   const count = useCart(selectCartCount);
   const tick = useCart((s) => s.addedTick);
+  const openDrawer = useCart((s) => s.openDrawer);
   const shown = hydrated ? count : 0;
 
   return (
-    <Link
-      href={routes.cart}
+    <button
+      type="button"
+      onClick={openDrawer}
+      aria-haspopup="dialog"
       aria-label={`Cart, ${shown} ${shown === 1 ? "item" : "items"}`}
       data-cart-target
       className="relative inline-flex size-10 items-center justify-center transition-opacity duration-300 hover:opacity-70"
@@ -46,6 +47,6 @@ export function CartButton() {
           </motion.span>
         </AnimatePresence>
       </span>
-    </Link>
+    </button>
   );
 }

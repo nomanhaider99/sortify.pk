@@ -3,6 +3,9 @@
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
+import { Toaster } from "sonner";
+import { CartDrawer } from "@/components/cart/cart-drawer";
+import { QuickAddSheet } from "@/components/cart/quick-add-sheet";
 import { SearchOverlay } from "@/components/search/search-overlay";
 import type { ShellData } from "@/lib/data";
 import { EASE_OUT_EXPO } from "@/lib/motion";
@@ -67,6 +70,11 @@ export function SiteChrome({ data }: { data: ShellData }) {
     document.documentElement.style.setProperty("--shell-offset", `${barHeight + HEADER_HEIGHT}px`);
   }, [barHeight]);
 
+  // Admin setting: open the cart drawer automatically after adding (read by useAddToCart).
+  useEffect(() => {
+    document.documentElement.dataset.cartAutoOpen = String(data.payments.autoOpenCartOnAdd);
+  }, [data.payments.autoOpenCartOnAdd]);
+
   // Close overlays on navigation.
   useEffect(() => {
     setOpen(null);
@@ -112,6 +120,20 @@ export function SiteChrome({ data }: { data: ShellData }) {
         open={open === "search"}
         onOpenChange={(v) => setOpen(v ? "search" : null)}
         suggestions={data.categories}
+      />
+      <QuickAddSheet />
+      <CartDrawer freeShippingThresholdCents={data.shipping.freeShippingThresholdCents} />
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          style: {
+            background: "#1F2A1A",
+            color: "#F7F5EF",
+            border: "none",
+            borderRadius: 4,
+            fontFamily: "var(--font-sans)",
+          },
+        }}
       />
     </>
   );

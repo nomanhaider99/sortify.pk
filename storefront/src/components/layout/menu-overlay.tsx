@@ -50,6 +50,7 @@ function buildGroups(data: ShellData): LinkGroup[] {
     {
       heading: "Pages",
       links: [
+        { label: "About", href: routes.about },
         { label: "Contact", href: routes.contact },
         { label: "Track Order", href: routes.track },
         { label: "Shipping & Returns", href: routes.shipping },
@@ -94,6 +95,10 @@ export function MenuOverlay({ open, onOpenChange, data }: MenuOverlayProps) {
   const primary: { label: string; href: Route }[] = [
     { label: "Home", href: routes.home },
     { label: "Shop", href: routes.shop },
+  ];
+  const trailing: { label: string; href: Route }[] = [
+    { label: "About", href: routes.about },
+    { label: "Contact", href: routes.contact },
   ];
 
   const linkReveal = {
@@ -258,26 +263,34 @@ export function MenuOverlay({ open, onOpenChange, data }: MenuOverlayProps) {
                       </AnimatePresence>
                     </li>
 
-                    <li className="overflow-hidden">
-                      <motion.div
-                        custom={3}
-                        variants={linkReveal}
-                        initial="hidden"
-                        animate="visible"
+                    {trailing.map((item, i) => (
+                      <li
+                        key={item.label}
+                        className={cn(
+                          "overflow-hidden",
+                          i < trailing.length - 1 && "border-b border-white/25",
+                        )}
                       >
-                        <Link
-                          href={routes.contact}
-                          onClick={close}
-                          aria-current={isActive(routes.contact) ? "page" : undefined}
-                          className={cn(
-                            bigLink,
-                            isActive(routes.contact) ? "text-on-strong" : "text-menu-ink-muted",
-                          )}
+                        <motion.div
+                          custom={3 + i}
+                          variants={linkReveal}
+                          initial="hidden"
+                          animate="visible"
                         >
-                          Contact
-                        </Link>
-                      </motion.div>
-                    </li>
+                          <Link
+                            href={item.href}
+                            onClick={close}
+                            aria-current={isActive(item.href) ? "page" : undefined}
+                            className={cn(
+                              bigLink,
+                              isActive(item.href) ? "text-on-strong" : "text-menu-ink-muted",
+                            )}
+                          >
+                            {item.label}
+                          </Link>
+                        </motion.div>
+                      </li>
+                    ))}
                   </ul>
 
                   <motion.div

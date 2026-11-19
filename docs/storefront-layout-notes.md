@@ -115,7 +115,7 @@ has a slow zoom + `<Parallax>`.
   - Product name in italic serif ~15px, dark grey.
   - Price ~11px sans `$1,099.00 USD`, muted.
 
-**Mapping:** tabs = our four seeded categories; active outline animated with a shared `layoutId`.
+**Mapping:** tabs = the first four categories (Side & Accent Tables, Vases & Decor, Candles & Lighting, Cookware); active outline animated with a shared `layoutId`.
 Tiles use `--surface-muted` (#F1EEE6). Brand label = product `brand` (defaults to `BRAND.name`),
 name in Cormorant Garamond italic, price formatted by `formatMoney()` (`$1,099.00 USD`). Grid:
 2 cols mobile / 3 tablet / 4 desktop, gap 14–16px. Hover: second image crossfade + Quick Add slides

@@ -86,17 +86,17 @@ export const DEFAULT_SETTINGS: SettingsMap = {
     eyebrow: "Make Your House",
     headline: "Feel Like Home",
     subtext:
-      "Quietly considered pieces in natural materials — made for slow mornings, long dinners and everyday comfort.",
+      "Side tables, handmade decor and kitchen essentials in natural materials — made for slow mornings, long dinners and everyday comfort.",
     ctaLabel: "New Collection",
     ctaHref: "/products?sort=newest",
-    imageUrl: "/seed/hero.webp",
-    imageAlt: "A calm living room with a linen sofa and warm evening light",
+    imageUrl: "/images/site/hero.webp",
+    imageAlt: "A warm living room with a lit fireplace, bookshelves and a wooden coffee table",
   },
   announcement: {
     enabled: true,
     messages: [
       "Free shipping on orders over $150 — Shop now",
-      "New arrivals every week, crafted to last",
+      "New handmade ceramics just landed",
       "30-day easy returns on every piece",
     ],
     dismissible: true,

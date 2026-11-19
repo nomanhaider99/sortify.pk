@@ -2,13 +2,14 @@
  * `pnpm db:seed`
  *
  * Development (default): wipes all data and loads the full demo dataset — roles, the Owner
- * (from ADMIN_EMAIL / ADMIN_PASSWORD), one demo user per default role, categories, 24 products
- * with variants, reviews, sample orders with tracking events, messages and settings.
+ * (from ADMIN_EMAIL / ADMIN_PASSWORD), one demo user per default role, categories, ~35 home decor &
+ * kitchen products with variants, reviews, sample orders with tracking events, messages and settings.
  *
  * Production (NODE_ENV=production): never wipes. Only upserts system roles/permissions, default
  * settings, and creates the Owner if no Owner exists yet.
  */
 import {
+  BRAND,
   DEFAULT_ROLES,
   DEFAULT_SETTINGS,
   ORDER_FLOW,
@@ -24,16 +25,19 @@ import { eq, sql } from "drizzle-orm";
 import { createClient, type Transaction } from "../client";
 import { hashPassword, passwordPolicyErrors } from "../password";
 import * as t from "../schema";
+import { PRODUCT_IMAGES, SITE_IMAGES, CATEGORY_IMAGES } from "../../scripts/image-manifest";
 import {
   CATEGORIES,
   PENDING_REVIEWS,
   PRODUCTS,
   REVIEW_SNIPPETS,
-  productImageName,
+  imageUrl,
   slugify,
-  type SeedColor,
+  type SeedOptionValue,
   type SeedProduct,
 } from "./data";
+
+const PRODUCT_AND_SITE_IMAGES = [...PRODUCT_IMAGES, ...SITE_IMAGES, ...CATEGORY_IMAGES];
 
 const isProd = process.env.NODE_ENV === "production";
 const DEMO_PASSWORD = "DemoPass!123";
@@ -197,13 +201,14 @@ async function seedCatalog(tx: Transaction) {
         slug: c.slug,
         name: c.name,
         description: c.description,
-        imageUrl: `/seed/categories/${c.slug}.webp`,
+        imageUrl: imageUrl(c.image),
         sortOrder: i,
       })
       .returning({ id: t.categories.id });
     if (row) categoryIds.set(c.slug, row.id);
   }
 
+  const alts = new Map(PRODUCT_AND_SITE_IMAGES.map((i) => [i.name, i.alt]));
   const variants: VariantRow[] = [];
   const productIds = new Map<string, string>();
 
@@ -216,14 +221,14 @@ async function seedCatalog(tx: Transaction) {
         title: p.title,
         summary: p.summary,
         description: p.description,
-        brand: "Majestic",
+        brand: BRAND.name,
         tags: p.tags,
         details: { dimensions: p.dimensions, materials: p.materials, care: p.care },
         status: "active",
         isFeatured: p.featured ?? false,
         basePriceCents: p.priceCents,
         compareAtPriceCents: p.compareAtCents ?? null,
-        seoTitle: `${p.title} | Majestic`,
+        seoTitle: `${p.title} | ${BRAND.name}`,
         seoDescription: p.summary,
         salesCount: p.salesCount,
         publishedAt: created,
@@ -238,144 +243,98 @@ async function seedCatalog(tx: Transaction) {
       categoryId: categoryIds.get(p.category) ?? "",
     });
 
-    // Images: two views per colour (or the single tone).
-    const colors: (SeedColor | null)[] = p.colors ?? [null];
-    const imageIdByColor = new Map<string, string>();
-    let sort = 0;
-    for (const color of colors) {
-      for (const view of [1, 2] as const) {
-        const [img] = await tx
-          .insert(t.productImages)
-          .values({
-            productId: product.id,
-            url: `/seed/${productImageName(p, color, view)}`,
-            alt: `${p.title}${color ? ` in ${color.name}` : ""}${view === 2 ? " — detail view" : ""}`,
-            width: 900,
-            height: 1125,
-            sortOrder: sort++,
-          })
-          .returning({ id: t.productImages.id });
-        if (img && view === 1) imageIdByColor.set(color?.name ?? "default", img.id);
-      }
-    }
+    await tx.insert(t.productImages).values(
+      p.images.map((name, i) => ({
+        productId: product.id,
+        url: imageUrl(name),
+        alt: i === 0 ? p.title : (alts.get(name) ?? p.title),
+        sortOrder: i,
+      })),
+    );
 
-    await seedVariants(tx, p, product.id, imageIdByColor, variants);
+    await seedVariants(tx, p, product.id, variants);
   }
   return { categoryIds, productIds, variants };
 }
 
-async function seedVariants(
-  tx: Transaction,
-  p: SeedProduct,
-  productId: string,
-  imageIdByColor: Map<string, string>,
-  out: VariantRow[],
-) {
-  const colorValues = new Map<string, string>();
-  const materialValues = new Map<string, string>();
-  let optionSort = 0;
-
-  if (p.colors) {
+/** Creates option groups and the cartesian product of their values as variants. */
+async function seedVariants(tx: Transaction, p: SeedProduct, productId: string, out: VariantRow[]) {
+  const valueIds = new Map<string, string>(); // "Option:Value" -> id
+  for (const [oi, option] of (p.options ?? []).entries()) {
     const [opt] = await tx
       .insert(t.productOptions)
-      .values({ productId, name: "Color", sortOrder: optionSort++ })
+      .values({ productId, name: option.name, sortOrder: oi })
       .returning({ id: t.productOptions.id });
-    for (const [i, c] of p.colors.entries()) {
-      const [v] = await tx
+    for (const [vi, v] of option.values.entries()) {
+      const [row] = await tx
         .insert(t.productOptionValues)
-        .values({ optionId: opt?.id ?? "", value: c.name, swatchHex: c.hex, sortOrder: i })
+        .values({
+          optionId: opt?.id ?? "",
+          value: v.value,
+          swatchHex: v.swatchHex ?? null,
+          sortOrder: vi,
+        })
         .returning({ id: t.productOptionValues.id });
-      if (v) colorValues.set(c.name, v.id);
-    }
-  }
-  if (p.materialOptions) {
-    const [opt] = await tx
-      .insert(t.productOptions)
-      .values({ productId, name: "Material", sortOrder: optionSort++ })
-      .returning({ id: t.productOptions.id });
-    for (const [i, m] of p.materialOptions.entries()) {
-      const [v] = await tx
-        .insert(t.productOptionValues)
-        .values({ optionId: opt?.id ?? "", value: m.name, sortOrder: i })
-        .returning({ id: t.productOptionValues.id });
-      if (v) materialValues.set(m.name, v.id);
+      if (row) valueIds.set(`${option.name}:${v.value}`, row.id);
     }
   }
 
-  const colorList: (SeedColor | null)[] = p.colors ?? [null];
-  const materialList = p.materialOptions ?? [null];
+  // Cartesian product of option values (one empty combination when there are no options).
+  let combos: { option: string; value: SeedOptionValue }[][] = [[]];
+  for (const option of p.options ?? []) {
+    combos = combos.flatMap((c) =>
+      option.values.map((value) => [...c, { option: option.name, value }]),
+    );
+  }
+
   const base = p.slug
     .split("-")
     .map((w) => w.slice(0, 3).toUpperCase())
     .slice(0, 2)
     .join("");
-  let sort = 0;
 
-  for (const color of colorList) {
-    for (const material of materialList) {
-      const key = [color?.name, material?.name].filter(Boolean).join("/") || "default";
-      const stock =
-        p.stock?.[key] ??
-        (color ? p.stock?.[color.name] : undefined) ??
-        (material ? p.stock?.[material.name] : undefined) ??
-        8 + Math.floor(rand() * 20);
-      const sku = [
-        base,
-        color ? slugify(color.name).slice(0, 3) : null,
-        material ? slugify(material.name).slice(0, 3) : null,
-      ]
-        .filter(Boolean)
-        .join("-")
-        .toUpperCase();
-      const price = p.priceCents + (material?.surchargeCents ?? 0);
-      const imageId = imageIdByColor.get(color?.name ?? "default") ?? null;
-      const [variant] = await tx
-        .insert(t.productVariants)
-        .values({
-          productId,
-          sku,
-          priceCents: price,
-          compareAtPriceCents: p.compareAtCents
-            ? p.compareAtCents + (material?.surchargeCents ?? 0)
-            : null,
-          stockQty: stock,
-          imageId,
-          sortOrder: sort++,
-        })
-        .returning({ id: t.productVariants.id });
-      if (!variant) throw new Error(`Failed to insert variant ${sku}`);
-
-      const links = [
-        color ? colorValues.get(color.name) : undefined,
-        material ? materialValues.get(material.name) : undefined,
-      ].filter((v): v is string => Boolean(v));
-      if (links.length) {
-        await tx
-          .insert(t.variantOptionValues)
-          .values(links.map((optionValueId) => ({ variantId: variant.id, optionValueId })));
-      }
-
-      // Link the colour's lead image back to this variant (first variant of each colour).
-      if (imageId && (!material || material === materialList[0])) {
-        await tx
-          .update(t.productImages)
-          .set({ variantId: variant.id })
-          .where(eq(t.productImages.id, imageId));
-      }
-
-      out.push({
-        id: variant.id,
+  for (const [sort, combo] of combos.entries()) {
+    const key = combo.map((c) => c.value.value).join("/") || "default";
+    const stock =
+      p.stock?.[key] ??
+      combo.map((c) => p.stock?.[c.value.value]).find((s) => s !== undefined) ??
+      8 + Math.floor(rand() * 25);
+    const surcharge = combo.reduce((s, c) => s + (c.value.surchargeCents ?? 0), 0);
+    const sku = [base, ...combo.map((c) => slugify(c.value.value).replace(/-/g, "").slice(0, 4))]
+      .join("-")
+      .toUpperCase();
+    const [variant] = await tx
+      .insert(t.productVariants)
+      .values({
         productId,
-        title: p.title,
         sku,
-        priceCents: price,
-        label: [color && `Color: ${color.name}`, material && `Material: ${material.name}`]
-          .filter(Boolean)
-          .join(" · "),
-        image: `/seed/${productImageName(p, color, 1)}`,
+        priceCents: p.priceCents + surcharge,
+        compareAtPriceCents: p.compareAtCents ? p.compareAtCents + surcharge : null,
         stockQty: stock,
-      });
+        sortOrder: sort,
+      })
+      .returning({ id: t.productVariants.id });
+    if (!variant) throw new Error(`Failed to insert variant ${sku}`);
+
+    const links = combo
+      .map((c) => valueIds.get(`${c.option}:${c.value.value}`))
+      .filter((v): v is string => Boolean(v));
+    if (links.length) {
+      await tx
+        .insert(t.variantOptionValues)
+        .values(links.map((optionValueId) => ({ variantId: variant.id, optionValueId })));
     }
+
+    out.push({
+      id: variant.id,
+      productId,
+      title: p.title,
+      sku,
+      priceCents: p.priceCents + surcharge,
+      label: combo.map((c) => `${c.option}: ${c.value.value}`).join(" · "),
+      image: imageUrl(p.images[0] ?? ""),
+      stockQty: stock,
+    });
   }
 }
 

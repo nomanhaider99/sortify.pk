@@ -1,7 +1,7 @@
 # PLAN.md — Majestic Store (Storefront + Admin Dashboard)
 
 > A client-showcase ecommerce platform: a modern, minimal, heavily animated storefront and a separate, secure admin dashboard (orders, products, reviews, RBAC) sharing one database.
-> **Brand placeholder:** "Majestic" (furniture & home). Make the brand name a single config constant so it can be renamed in one place.
+> **Brand placeholder:** "Majestic" (home decor & kitchen essentials — small tables, vases, candles, cookware, kitchen tools, tableware). Make the brand name a single config constant so it can be renamed in one place.
 
 ---
 
@@ -43,7 +43,7 @@ These files are in the project root. **Open and study each image** (you can read
 ## 1. Goals & Scope
 
 ### Phase 1 deliverables
-- **Storefront pages:** Home, Categories (listing + category page), Products (listing + product detail), Contact — plus Cart, Checkout, Order Success, Order Tracking, Account-lite (optional login to see orders).
+- **Storefront pages:** Home, About, Categories (listing + category page), Products (listing + product detail), Contact — plus Cart, Checkout, Order Success, Order Tracking, Account-lite (optional login to see orders).
 - **Complete purchase flow (A→Z):** browse → quick add / product-page add (with variants) → animated add-to-cart → cart drawer/page → checkout → payment (COD or demo card) → confirmation → parcel tracking.
 - **Admin dashboard** (separate Next.js app in `admin-dashboard/`): dashboard analytics, orders workflow (incoming → confirmed → shipped → delivered), tracking updates, products & variants, categories, reviews moderation, customers, contact messages, users & roles (RBAC), settings, audit log.
 - **Reviews loop:** customers submit reviews → owner approves in admin → approved reviews appear on the storefront.
@@ -156,7 +156,7 @@ Generous whitespace, 12-col grid, max container ~1440px with wide gutters, thin 
 **Full-page menu** (reference: dark overlay)
 - Opens from center hamburger; full viewport `--menu-bg`, entrance via clip-path/slide-down with staggered link reveals; body scroll locked; focus trapped; `Esc` closes; close button top-right (white square with X).
 - **Left column:** huge uppercase links — `HOME`, `SHOP`, `CATEGORIES ›`, `CONTACT` — separated by thin lines; inactive links dimmed grey, hovered/active white; link with `›` reveals the right panel.
-- **Right panel (multi-column):** headings `CATEGORIES` (Chairs, Living Room, Bedroom, Dining Room…), `COLLECTIONS` (New Arrivals, Best Sellers, …), `PRODUCTS` (featured product links), `PAGES` (Contact, Track Order, FAQ/Shipping). Columns fade/slide in staggered. Data driven from DB categories.
+- **Right panel (multi-column):** headings `CATEGORIES` (Side & Accent Tables, Vases & Decor, Candles & Lighting, Cookware, Kitchen Tools, Tableware), `COLLECTIONS` (New Arrivals, Best Sellers, …), `PRODUCTS` (featured product links), `PAGES` (Contact, Track Order, FAQ/Shipping). Columns fade/slide in staggered. Data driven from DB categories.
 - **Bottom-left:** social icon circles (Instagram, X, Facebook) + copyright line.
 - Mobile: single column, accordion for right panel.
 
@@ -170,7 +170,7 @@ Generous whitespace, 12-col grid, max container ~1440px with wide gutters, thin 
 
 ### 5.2 Home page (`/`)
 1. **Hero** (reference: Majestic) — full-bleed (min 100svh) interior image with dark gradient overlay, slow zoom/parallax on scroll; centered headline in two lines: small italic serif *"Make Your House"* above huge italic serif *"Feel Like Home"* (words masked-reveal on load); subcopy; white "NEW COLLECTION" button (hover: fills green). Header overlays it. Hero content editable from admin Settings (headline, subtext, CTA, image).
-2. **Featured Collections** (reference: product grid) — centered italic serif heading; **tab pills** (Chairs / Living Room / Bedroom / Dining Room) with animated active outline (shared `layoutId`); **4-column** grid of product cards; tab switch crossfades grid.
+2. **Featured Collections** (reference: product grid) — centered italic serif heading; **tab pills** (first four categories: Side & Accent Tables / Vases & Decor / Candles & Lighting / Cookware) with animated active outline (shared `layoutId`); **4-column** grid of product cards; tab switch crossfades grid.
 3. **Category showcase** — large editorial tiles (image + italic title + "Shop now" arrow), staggered scroll reveal, image zoom on hover.
 4. **Brand story / values strip** — sage `--primary` background section (dark ink text) with 3–4 value props (Premium materials, Free shipping, Easy returns, Secure checkout) with icons counting/fading in.
 5. **Best sellers** — horizontal scroll-snap carousel with drag + arrows.
@@ -360,7 +360,7 @@ Use UUID PKs (or cuid), `created_at`/`updated_at` on all tables, soft delete whe
 - `audit_logs` (id, actor_id, action, entity_type, entity_id, summary/diff JSON, ip, user_agent, created_at)
 - `login_attempts` (for lockout/rate limiting) or use an Upstash-style limiter
 
-**Seed data (`pnpm db:seed`):** Owner + one user per default role (dev only), roles & permissions, 4 categories (Chairs, Living Room, Bedroom, Dining Room), ~24 furniture products with 1–3 images, variants (Color × Material where relevant), approved + pending reviews, a few sample orders in different statuses with tracking events, default settings (hero copy, announcement, shipping rates). Use local placeholder images in `/public/seed/` (generate neutral placeholders or ask user to drop real images; do not hotlink or scrape copyrighted images).
+**Seed data (`pnpm db:seed`):** Owner + one user per default role (dev only), roles & permissions, 6 categories (Side & Accent Tables, Vases & Decor, Candles & Lighting, Cookware, Kitchen Tools, Tableware), ~35 home decor & kitchen products with 2 images each, variants (Color / Finish / Size / Scent where relevant), approved + pending reviews, a few sample orders in different statuses with tracking events, default settings (hero copy, announcement, shipping rates). Use local placeholder images in `/public/seed/` (generate neutral placeholders or ask user to drop real images; do not hotlink or scrape copyrighted images).
 
 ---
 
@@ -447,28 +447,28 @@ Scripts at root: `pnpm dev` (both apps), `pnpm dev:store`, `pnpm dev:admin`, `pn
 - [x] Search overlay (basic)
 
 ### M3 — Home Page
-- [ ] Majestic-style hero per `ref-3.png` (parallax, text mask reveal, settings-driven)
-- [ ] Featured Collections with animated tabs + product grid per `ref-4.png`
-- [ ] Category showcase, values strip, best sellers carousel, testimonials (approved reviews), newsletter
+- [x] Majestic-style hero per `ref-3.png` (parallax, text mask reveal, settings-driven)
+- [x] Featured Collections with animated tabs + product grid per `ref-4.png`
+- [x] Category showcase, values strip, best sellers carousel, testimonials (approved reviews), newsletter
 
 ### M4 — Catalog (Categories & Products)
-- [ ] Product card with hover swap, swatches, badges
-- [ ] `/categories`, `/categories/[slug]`, `/products` with filters/sort/URL state/load more
-- [ ] Product detail: gallery, variants, accordions, related, JSON-LD, sticky mobile bar
-- [ ] Reviews display + submission form (pending state)
+- [x] Product card with hover swap, swatches, badges
+- [x] `/categories`, `/categories/[slug]`, `/products` with filters/sort/URL state/load more
+- [x] Product detail: gallery, variants, accordions, related, JSON-LD, sticky mobile bar
+- [x] Reviews display + submission form (pending state)
 
 ### M5 — Cart & Quick Add
-- [ ] Zustand cart store (persist), server validation endpoints
-- [ ] Quick Add modal with variants; instant add for single-variant
-- [ ] **Fly-to-cart animation**, animated button states, cart badge bump
-- [ ] Cart drawer + `/cart` page + free-shipping progress bar
+- [x] Zustand cart store (persist), server validation endpoints
+- [x] Quick Add modal with variants; instant add for single-variant
+- [x] **Fly-to-cart animation**, animated button states, cart badge bump
+- [x] Cart drawer + `/cart` page + free-shipping progress bar
 
 ### M6 — Checkout, Payment, Orders, Tracking
-- [ ] Checkout form (contact, shipping, delivery method, payment method) with Zod validation
-- [ ] `PaymentProvider` interface, `CodProvider`, `DemoCardProvider` (4242 success / 0002 decline)
-- [ ] Order creation transaction (stock decrement, snapshots, events, order number)
-- [ ] Success page animation; `/track` lookup + animated timeline page
-- [ ] Contact page + form → DB (rate limited, honeypot)
+- [x] Checkout form (contact, shipping, delivery method, payment method) with Zod validation
+- [x] `PaymentProvider` interface, `CodProvider`, `DemoCardProvider` (4242 success / 0002 decline)
+- [x] Order creation transaction (stock decrement, snapshots, events, order number)
+- [x] Success page animation; `/track` lookup + animated timeline page
+- [x] Contact page + form → DB (rate limited, honeypot)
 
 ### M7 — Admin Foundation & Security
 - [ ] Auth.js credentials login, argon2, lockout/rate limit, session hardening
@@ -511,7 +511,7 @@ _(Claude Code: record any decision that deviates from or extends this plan.)_
 | 2026-11-18 | Schema extensions beyond §7: `products.summary/tags/details(jsonb)/sales_count/published_at`; `categories.show_in_menu`; `product_images.width/height`; `product_variants.sort_order`; `orders.fee_cents/idempotency_key/refunded_at`; `order_events.occurred_at`; new `order_notes` table (internal notes); `admin_users.session_version` (force logout / sign-out everywhere); `contact_messages.handled_at`; `customers.accepts_marketing`; `settings.updated_by`; `newsletter_subscribers.source`; `tax` settings key (basis points) | Needed by §5/§6 features (accordions, best-selling sort, "shows in menu", COD fee, double-submit guard, internal notes, session revocation). Emails are unique case-insensitively via `lower(email)` indexes. |
 | 2026-11-18 | Permissions: CRUD actions are only generated where meaningful (`dashboard`/`audit`: view; `settings`: view+update; `messages`: no create) | Keeps the permission matrix free of meaningless checkboxes. |
 | 2026-11-18 | Search uses `lower()` btree indexes + `ILIKE`; trigram (`pg_trgm`) index deferred | The PGlite socket server does not load extensions; see §14. |
-| 2026-11-18 | Seed images are **generated placeholders** (flat furniture silhouettes / interior, SVG → WebP via sharp) committed in `storefront/public/seed/`; admin loads them via `STOREFRONT_URL` | Plan forbids hotlinking/scraping; real photos can replace files 1:1 by name. |
+| 2026-11-18 | ~~Seed images are generated placeholders~~ (superseded 2026-11-19 by Pexels photography, below). Seed images were **generated placeholders** (flat furniture silhouettes / interior, SVG → WebP via sharp) committed in `storefront/public/seed/`; admin loads them via `STOREFRONT_URL` | Plan forbids hotlinking/scraping; real photos can replace files 1:1 by name. |
 | 2026-11-18 | `pnpm db:seed` wipes and reloads in development; with `NODE_ENV=production` it never wipes and only ensures system roles, default settings and the Owner. Demo users (dev only) use password `DemoPass!123` | Safe first-run in prod; repeatable demo data in dev. |
 | 2026-11-18 | Storefront header follows **ref-1** (centered hamburger + full-page menu); only the marquee bar and the transparent-over-image feel come from ref-3 (its inline nav is not used) | §5.1 specifies the ref-1 header. |
 | 2026-11-18 | Menu overlay (ref-2 is cropped) completed as: left column is full height with links at the top and socials + copyright pinned to the bottom; right panel scrolls independently; the panel is open by default with `CATEGORIES ›` as its owner link (like `FEATURES ›` in the ref), and toggles it. Left column widened from the ref's ~33% to ~40% (min 480px) so `CATEGORIES ›` fits at the menu font size | Our longest link ("CATEGORIES") is longer than the ref's ("FEATURES"); without widening it was clipped. |
@@ -522,6 +522,15 @@ _(Claude Code: record any decision that deviates from or extends this plan.)_
 | 2026-11-18 | Shell data (announcement, store info, menu categories, featured products) is loaded once in the root layout via `unstable_cache` tagged `catalog`/`settings` (5-min revalidate) and falls back to defaults if the DB is unreachable | Keeps header/footer resilient; tags are what the M9 revalidation webhook will invalidate. |
 | 2026-11-18 | Added a minimal persisted Zustand cart store (lines + count + add tick) in M2 so the header badge is live; add/validation flows land in M5 | Header badge needs real state now. |
 | 2026-11-18 | `scripts/screenshot.mjs` (Playwright, falls back to installed Edge/Chrome) captures desktop + mobile states for reference comparison | Section 0.1 rule 5. |
+| 2026-11-19 | **Catalog pivot (owner request): home decor & kitchen essentials.** Categories are now Side & Accent Tables, Vases & Decor, Candles & Lighting, Cookware, Kitchen Tools, Tableware (35 demo products). Featured Collections tabs use the first four categories. Brand constant unchanged ("Majestic") | The store sells small tables, decor and kitchen essentials, not large furniture. |
+| 2026-11-19 | **Real photography from Pexels** (owner request) replaces the generated placeholders. `pnpm --filter @repo/db images` downloads each photo once from the manifest (`packages/db/scripts/image-manifest.ts`), converts to WebP and stores it in `storefront/public/images/`; credits in `docs/image-credits.md` | Pexels License allows free commercial use; downloading (not hotlinking) keeps the "no hotlinking" rule. |
+| 2026-11-19 | Added an **About** page (hero, story, stats, values, process, mosaic, CTA) and a home "Our story" teaser + kitchen editorial section (beyond §5.2) | Owner asked for About/testimonials sections and image-backed sections. |
+| 2026-11-19 | Pricing, payment providers (`CodProvider`, `DemoCardProvider`), checkout schema and sort constants live in `@repo/shared` (pure, unit-tested); `createOrder` lives in `@repo/db` (one transaction: conditional stock decrement, customer upsert, snapshots, address, first public event, payment) | One source of truth for totals in UI and server; reusable by the admin. |
+| 2026-11-19 | Order pages are gated by a **signed httpOnly cookie** (HMAC with `AUTH_SECRET`) set after placing an order or after a successful order-number + email lookup; the lookup returns the same error for unknown number and wrong email | Prevents order enumeration while keeping guest checkout. |
+| 2026-11-19 | "Buy it now" goes to `/checkout?buy=<variantId>&qty=n` (cart untouched); the sticky add-to-cart bar shows on all breakpoints once the main button scrolls away | Simple, URL-driven, no extra state. |
+| 2026-11-19 | `/account` is an order lookup (number + email) — guest checkout only in Phase 1 | PLAN §5.10 allows account-lite; full accounts deferred. |
+| 2026-11-19 | Reduced-motion variants explicitly reset transforms (`y: 0`) | Found in QA: SSR renders the full-motion hidden state before `useReducedMotion` resolves, which left mask-revealed headings invisible. |
+| 2026-11-19 | `scripts/smoke.mjs`: browser end-to-end smoke test (quick add, PDP variant add, COD + card checkout incl. decline, tracking access control, filters, contact, review) | Verifies the purchase flow until the Playwright suites in M9. |
 
 ## 14. Deferred / Future
 - Real payments (Stripe), real courier APIs, shipping labels
@@ -533,3 +542,5 @@ _(Claude Code: record any decision that deviates from or extends this plan.)_
 - Advanced analytics, CSV import
 - Trigram (`pg_trgm`) search index — enable on Neon (`CREATE EXTENSION pg_trgm`) when catalog size warrants fuzzy search
 - Shared-store rate limiter (Upstash/Postgres) for multi-instance deployments (current limiter is in-memory per instance)
+- Transactional emails (order confirmation, status updates, contact notification) — needs the `mailer` adapter + `RESEND_API_KEY`; storefront copy does not promise emails until then
+- Server-side cart sync for logged-in customers (tables exist; depends on customer accounts)

@@ -16,6 +16,15 @@ export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 export const DELIVERY_METHODS = ["standard", "express"] as const;
 export type DeliveryMethod = (typeof DELIVERY_METHODS)[number];
 
+export const PRODUCT_SORTS = [
+  "featured",
+  "newest",
+  "price_asc",
+  "price_desc",
+  "best_selling",
+] as const;
+export type ProductSort = (typeof PRODUCT_SORTS)[number];
+
 export const ORDER_STATUSES = [
   "pending",
   "confirmed",

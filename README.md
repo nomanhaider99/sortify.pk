@@ -1,6 +1,6 @@
 # Majestic Store
 
-A client-showcase ecommerce platform: a minimal, heavily animated **storefront** and a separate,
+A client-showcase ecommerce platform for **home decor & kitchen essentials**: a minimal, heavily animated **storefront** and a separate,
 secure **admin dashboard** (orders, products, reviews, RBAC) sharing one Postgres database.
 See [`PLAN.md`](./PLAN.md) for the full specification and milestone checklist.
 
@@ -35,15 +35,17 @@ pnpm dev                      # storefront :3000 + admin :3001
 
 ## Scripts
 
-| Script                                       | What it does                                                                       |
-| -------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `pnpm dev` / `dev:store` / `dev:admin`       | Run both apps / one app                                                            |
-| `pnpm db:local`                              | Local PGlite Postgres server on `127.0.0.1:5433` (data in `.pglite/`)              |
-| `pnpm db:generate`                           | Generate a SQL migration from schema changes                                       |
-| `pnpm db:migrate`                            | Apply migrations                                                                   |
-| `pnpm db:seed`                               | Reset + load demo data (dev). In production only ensures roles, settings and Owner |
-| `pnpm --filter @repo/db placeholders`        | Re-render placeholder product images into `storefront/public/seed/`                |
-| `pnpm typecheck` / `lint` / `build` / `test` | Quality gates                                                                      |
+| Script                                       | What it does                                                                                    |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `pnpm dev` / `dev:store` / `dev:admin`       | Run both apps / one app                                                                         |
+| `pnpm db:local`                              | Local PGlite Postgres server on `127.0.0.1:5433` (data in `.pglite/`)                           |
+| `pnpm db:generate`                           | Generate a SQL migration from schema changes                                                    |
+| `pnpm db:migrate`                            | Apply migrations                                                                                |
+| `pnpm db:seed`                               | Reset + load demo data (dev). In production only ensures roles, settings and Owner              |
+| `pnpm --filter @repo/db images`              | Download the Pexels photos in the manifest into `storefront/public/images/` (already committed) |
+| `node scripts/smoke.mjs [url]`               | Browser smoke test of the full purchase flow against a running storefront                       |
+| `node scripts/screenshot.mjs [url]`          | Capture desktop/mobile screenshots for design review                                            |
+| `pnpm typecheck` / `lint` / `build` / `test` | Quality gates                                                                                   |
 
 ## Seed credentials (development only)
 
@@ -57,9 +59,20 @@ pnpm dev                      # storefront :3000 + admin :3001
 
 ## Images
 
-Seed product, category and hero images are original, neutral placeholders generated locally
-(`packages/db/scripts/generate-placeholders.ts`). Replace any file in `storefront/public/seed/`
-with a real photo of the same name to upgrade the demo.
+All photography is from [Pexels](https://www.pexels.com) (free for commercial use under the
+[Pexels License](https://www.pexels.com/license/)). Photos are downloaded once and served locally
+from `storefront/public/images/` — never hotlinked. The list lives in
+`packages/db/scripts/image-manifest.ts`; credits are in [`docs/image-credits.md`](./docs/image-credits.md).
+To swap a photo, change its Pexels id in the manifest and run `pnpm --filter @repo/db images --force`.
+
+## Storefront pages
+
+Home · About · Shop (`/products`, filters + sort + load more) · Categories · Product detail
+(gallery, variants, reviews) · Cart drawer + `/cart` · Checkout (COD or demo card) · Order success ·
+Track order · Contact (+ FAQ) · Account (order lookup).
+
+**Demo cards:** `4242 4242 4242 4242` (any future expiry, any CVC) succeeds;
+`4000 0000 0000 0002` is declined. No real charges are made.
 
 ## Client demo script
 

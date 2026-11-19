@@ -9,6 +9,8 @@ export const TAGS = { catalog: "catalog", settings: "settings" } as const;
 export type ShellData = {
   announcement: typeof DEFAULT_SETTINGS.announcement;
   store: typeof DEFAULT_SETTINGS.store;
+  shipping: typeof DEFAULT_SETTINGS.shipping;
+  payments: typeof DEFAULT_SETTINGS.payments;
   categories: { slug: string; name: string }[];
   featuredProducts: { slug: string; title: string }[];
 };
@@ -16,13 +18,15 @@ export type ShellData = {
 async function loadShell(): Promise<ShellData> {
   try {
     const [settings, categories, featured] = await Promise.all([
-      getSettings(["announcement", "store"]),
+      getSettings(["announcement", "store", "shipping", "payments"]),
       listCategories({ menuOnly: true }),
       listProducts({ featuredOnly: true, sort: "best_selling", limit: 6 }),
     ]);
     return {
       announcement: settings.announcement,
       store: settings.store,
+      shipping: settings.shipping,
+      payments: settings.payments,
       categories: categories.map((c) => ({ slug: c.slug, name: c.name })),
       featuredProducts: featured.items.map((p) => ({ slug: p.slug, title: p.title })),
     };
@@ -32,6 +36,8 @@ async function loadShell(): Promise<ShellData> {
     return {
       announcement: DEFAULT_SETTINGS.announcement,
       store: DEFAULT_SETTINGS.store,
+      shipping: DEFAULT_SETTINGS.shipping,
+      payments: DEFAULT_SETTINGS.payments,
       categories: [],
       featuredProducts: [],
     };

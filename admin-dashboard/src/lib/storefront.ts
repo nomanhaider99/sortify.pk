@@ -1,10 +1,10 @@
 import "server-only";
-import { STOREFRONT_ORIGIN } from "./links";
+import { storefrontOrigin } from "./links";
 
 export { storefrontLink } from "./links";
 
 // Server-to-server URL for the webhook (can differ from the public origin).
-const storefrontUrl = () => (process.env.STOREFRONT_URL ?? STOREFRONT_ORIGIN).replace(/\/$/, "");
+const storefrontUrl = () => (process.env.STOREFRONT_URL ?? storefrontOrigin()).replace(/\/$/, "");
 
 /**
  * Tells the storefront to refresh cached pages after admin changes. Never throws: a failed

@@ -31,21 +31,21 @@ export function ListingToolbar({ total, facets }: { total: number; facets: Facet
 
   return (
     <div className="space-y-4" aria-busy={pending}>
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <div className="flex items-center gap-3">
           <FilterSheet facets={facets} activeCount={chips.length} total={total} />
           <p className="text-ink-muted text-sm" aria-live="polite">
             {total} {total === 1 ? "product" : "products"}
           </p>
         </div>
-        <label className="relative flex items-center gap-2 text-sm">
+        <label className="relative flex min-w-0 items-center gap-2 text-sm">
           <span className="text-ink-muted hidden sm:inline">Sort by</span>
           <select
             value={sort}
             onChange={(e) =>
               setValue("sort", e.target.value === "featured" ? null : e.target.value)
             }
-            className="border-border focus-visible:outline-primary-strong h-10 appearance-none rounded-full border bg-transparent pr-9 pl-4 text-sm"
+            className="border-border focus-visible:outline-primary-strong h-10 max-w-full min-w-0 appearance-none truncate rounded-full border bg-transparent pr-9 pl-4 text-sm"
           >
             {(Object.keys(SORT_LABELS) as ProductSort[]).map((s) => (
               <option key={s} value={s}>

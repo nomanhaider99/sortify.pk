@@ -16,3 +16,7 @@ playwright-report/
 test-results/
 .turbo/
 screenshots/
+
+# Playwright
+test-results/
+playwright-report/

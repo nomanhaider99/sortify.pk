@@ -528,7 +528,7 @@ async function seedCustomersAndOrders(tx: Transaction, variants: VariantRow[], s
     const [order] = await tx
       .insert(t.orders)
       .values({
-        orderNumber: generateOrderNumber(placed, "MJ", rand),
+        orderNumber: generateOrderNumber(placed, BRAND.orderPrefix, rand),
         customerId,
         email: c.email,
         phone: address.phone,

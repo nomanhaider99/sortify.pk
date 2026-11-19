@@ -15,7 +15,7 @@ import { ANNOUNCEMENT_HEIGHT, AnnouncementBar } from "./announcement-bar";
 import { HEADER_HEIGHT, Header } from "./header";
 import { MenuOverlay } from "./menu-overlay";
 
-const DISMISS_KEY = "majestic-announcement-dismissed";
+const DISMISS_KEY = "sortify-announcement-dismissed";
 const HIDE_AFTER = 160;
 
 // Session-scoped "announcement dismissed" flag as a tiny external store (hydration-safe).

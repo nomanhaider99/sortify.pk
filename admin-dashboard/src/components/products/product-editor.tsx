@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProductStatus } from "@repo/shared";
+import { BRAND, type ProductStatus } from "@repo/shared";
 import { ArrowLeft, ArrowRight, ImagePlus, Plus, Trash2, Upload, X } from "lucide-react";
 import type { Route } from "next";
 import Image from "next/image";
@@ -102,7 +102,7 @@ const EMPTY: Form = {
   slug: "",
   summary: "",
   description: "",
-  brand: "Majestic",
+  brand: BRAND.name,
   tags: [],
   details: {},
   status: "draft",

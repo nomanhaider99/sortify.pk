@@ -2,14 +2,14 @@
  * Single source of truth for the store brand. Rename the store here only.
  */
 export const BRAND = {
-  name: "Majestic",
+  name: "Sortify",
   tagline: "Home decor & kitchen essentials",
   description:
     "Small tables, handmade decor and everyday kitchen essentials — thoughtfully made to be used and loved for years.",
-  orderPrefix: "MJ",
+  orderPrefix: "SF",
   currency: "USD",
   localeLabel: "ENGLISH (USD $)",
-  contactEmail: "hello@majestic.example",
+  contactEmail: "hello@sortify.pk",
   social: {
     instagram: "https://instagram.com/",
     x: "https://x.com/",

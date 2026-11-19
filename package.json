@@ -1,5 +1,5 @@
 {
-  "name": "majestic-store",
+  "name": "sortify-store",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@12.21.0",

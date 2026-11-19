@@ -2,7 +2,7 @@ import { BRAND } from "./brand";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I for readability
 
-/** Generates a human-friendly order number: `MJ-YYYYMMDD-XXXX`. Uniqueness is enforced by the DB. */
+/** Generates a human-friendly order number: `SF-YYYYMMDD-XXXX`. Uniqueness is enforced by the DB. */
 export function generateOrderNumber(
   date: Date = new Date(),
   prefix: string = BRAND.orderPrefix,

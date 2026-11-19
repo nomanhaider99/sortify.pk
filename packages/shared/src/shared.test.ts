@@ -26,9 +26,9 @@ describe("money", () => {
 });
 
 describe("order number", () => {
-  it("uses MJ-YYYYMMDD-XXXX", () => {
-    const n = generateOrderNumber(new Date(Date.UTC(2026, 10, 18)), "MJ", () => 0);
-    expect(n).toBe("MJ-20261118-AAAA");
+  it("uses SF-YYYYMMDD-XXXX", () => {
+    const n = generateOrderNumber(new Date(Date.UTC(2026, 10, 18)), "SF", () => 0);
+    expect(n).toBe("SF-20261118-AAAA");
     expect(ORDER_NUMBER_PATTERN.test(generateOrderNumber())).toBe(true);
   });
 });

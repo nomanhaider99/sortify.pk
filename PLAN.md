@@ -549,6 +549,7 @@ _(Claude Code: record any decision that deviates from or extends this plan.)_
 | 2026-11-19 | CSV exports (orders, customers) require `data:export`, are audited, and neutralise spreadsheet formula injection | Exports are a common data-leak/injection vector. |
 | 2026-11-19 | Local PGlite server pins each client to the session until its extended-protocol cycle ends (Sync / simple Query) | With storefront + admin both connected, interleaved Parse/Bind messages corrupted queries ("bind message supplies 1 parameters…"). Local-only; Neon is unaffected. |
 | 2026-11-19 | `scripts/commerce-smoke.mjs` (33 checks: dashboard, order workflow incl. ship dialog, notes/events, invoice/slip, product builder, categories, reviews, customers, messages, settings, audit, Editor/Manager RBAC) and `scripts/revalidate-e2e.mjs` | Covers M8 until the Playwright suites in M9; both are re-runnable on the same DB. |
+| 2026-11-21 | **Brand renamed to Sortify** (owner request): `BRAND.name` "Sortify", order prefix `SF`, contact `hello@sortify.pk`; browser storage keys renamed (`sortify-*`). Live Neon data updated in place (store settings name/email/prefix, product brand + SEO titles); existing `MJ-…` order numbers are kept | "Majestic" was a placeholder (it also appears in the reference images). Renumbering existing orders would break customers' tracking links. |
 
 ## 14. Deferred / Future
 - Real payments (Stripe), real courier APIs, shipping labels

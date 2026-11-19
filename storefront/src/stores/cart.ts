@@ -80,7 +80,7 @@ export const useCart = create<CartState>()(
       sync: (lines) => set({ lines }),
     }),
     {
-      name: "majestic-cart",
+      name: "sortify-cart",
       version: 1,
       storage: createJSONStorage(() => localStorage),
       partialize: (s) => ({ lines: s.lines }),

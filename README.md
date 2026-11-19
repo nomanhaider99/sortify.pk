@@ -1,4 +1,4 @@
-# Majestic Store
+# Sortify
 
 A client-showcase ecommerce platform for **home decor & kitchen essentials**: a minimal, heavily animated **storefront** and a separate,
 secure **admin dashboard** (orders, products, reviews, RBAC) sharing one Postgres database.

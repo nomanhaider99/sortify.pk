@@ -41,7 +41,7 @@ export const orderNumberSchema = z
   .string()
   .trim()
   .toUpperCase()
-  .regex(ORDER_NUMBER_PATTERN, "Order numbers look like MJ-20260101-AB12");
+  .regex(ORDER_NUMBER_PATTERN, "Order numbers look like SF-20260101-AB12");
 
 export const trackLookupSchema = z.object({ orderNumber: orderNumberSchema, email });
 export type TrackLookupInput = z.infer<typeof trackLookupSchema>;

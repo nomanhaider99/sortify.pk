@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { routes } from "@/lib/routes";
 
 type Viewed = { slug: string; title: string; image: string | null; priceCents: number };
-const KEY = "majestic-recently-viewed";
+const KEY = "sortify-recently-viewed";
 
 function read(): Viewed[] {
   try {

@@ -6,4 +6,5 @@ export * from "./payments";
 export * from "./permissions";
 export * from "./pricing";
 export * from "./schemas";
+export * from "./security";
 export * from "./tokens";

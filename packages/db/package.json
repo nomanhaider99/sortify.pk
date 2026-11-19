@@ -7,7 +7,8 @@
     ".": "./src/index.ts",
     "./schema": "./src/schema/index.ts",
     "./client": "./src/client.ts",
-    "./password": "./src/password.ts"
+    "./password": "./src/password.ts",
+    "./admin": "./src/admin/index.ts"
   },
   "scripts": {
     "local": "node --env-file-if-exists=../../.env --import tsx src/local-server.ts",

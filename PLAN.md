@@ -471,11 +471,11 @@ Scripts at root: `pnpm dev` (both apps), `pnpm dev:store`, `pnpm dev:admin`, `pn
 - [x] Contact page + form → DB (rate limited, honeypot)
 
 ### M7 — Admin Foundation & Security
-- [ ] Auth.js credentials login, argon2, lockout/rate limit, session hardening
-- [ ] Middleware + `requirePermission` helper, RBAC tables, default roles
-- [ ] Admin layout per `admin-dashboard-design.webp` (sidebar, topbar, grid, cards, tables) recolored with our tokens; command palette, light/dark toggle, 403 page
-- [ ] Users & Roles: invite/create user, role assignment, permission matrix editor, disable/reset
-- [ ] Audit logging utility wired into all mutations
+- [x] Auth.js credentials login, argon2, lockout/rate limit, session hardening
+- [x] Middleware + `requirePermission` helper, RBAC tables, default roles
+- [x] Admin layout per `admin-dashboard-design.webp` (sidebar, topbar, grid, cards, tables) recolored with our tokens; command palette, light/dark toggle, 403 page
+- [x] Users & Roles: invite/create user, role assignment, permission matrix editor, disable/reset
+- [x] Audit logging utility wired into all mutations
 
 ### M8 — Admin Commerce Modules
 - [ ] Dashboard analytics & needs-attention panel
@@ -531,6 +531,12 @@ _(Claude Code: record any decision that deviates from or extends this plan.)_
 | 2026-11-19 | `/account` is an order lookup (number + email) — guest checkout only in Phase 1 | PLAN §5.10 allows account-lite; full accounts deferred. |
 | 2026-11-19 | Reduced-motion variants explicitly reset transforms (`y: 0`) | Found in QA: SSR renders the full-motion hidden state before `useReducedMotion` resolves, which left mask-revealed headings invisible. |
 | 2026-11-19 | `scripts/smoke.mjs`: browser end-to-end smoke test (quick add, PDP variant add, COD + card checkout incl. decline, tracking access control, filters, contact, review) | Verifies the purchase flow until the Playwright suites in M9. |
+| 2026-11-19 | Admin auth: **Auth.js v5 (`next-auth@5.0.0-beta.32`)** Credentials + JWT (12 h max, 2 h idle timeout). Every request re-validates the user against the DB (`getAdminSession`): disabled users, role changes, password changes and "sign out everywhere" bump `admin_users.session_version`, which invalidates existing JWTs immediately | Stateless JWTs alone can't be revoked; a DB check per request is cheap and gives instant revocation. |
+| 2026-11-19 | Next 16 renamed middleware → **`src/proxy.ts`**. It only gates authentication and the forced password change; authorization is enforced server-side in every page (`requirePagePermission`) and action (`runAction` → `requirePermission`). The forced change is also enforced in the app layout and in `requirePermission` | Defense in depth — never rely on the proxy/UI alone (PLAN §6.2). |
+| 2026-11-19 | Brute-force protection is **DB-backed** (`login_attempts`): 5 failures per email or 30 per IP in 15 min lock sign-in; unknown emails are verified against a real argon2 hash so timing doesn't reveal accounts; one generic error message | Works across serverless instances; no user enumeration. |
+| 2026-11-19 | Invites (48 h) and admin-initiated password resets (2 h) are one-time tokens stored as SHA-256 hashes; with no mailer, the link is shown in a copyable dialog | PLAN §6.2 fallback when email isn't configured. |
+| 2026-11-19 | System roles keep their names; Owner's permissions are immutable; custom roles can be created/edited/deleted (only when unassigned). Guards prevent removing the last active Owner and acting on yourself (role change, disable, delete) | PLAN §6.3 "cannot be locked out". |
+| 2026-11-19 | `scripts/admin-smoke.mjs`: browser test of the admin security flows (redirects, generic errors, forced password change, invite → accept → RBAC sidebar + 403, audit entries, instant revocation, lockout) | Covers the PLAN §8 RBAC flow until the Playwright suites in M9. |
 
 ## 14. Deferred / Future
 - Real payments (Stripe), real courier APIs, shipping labels

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/cn";
 
 const ACTION_ORDER = ["view", "create", "update", "delete"];
 const LABELS: Record<string, string> = {
@@ -103,13 +104,13 @@ export function PermissionMatrix({
     <div className="space-y-6">
       <Link
         href={"/roles"}
-        className="text-ink-muted hover:text-ink inline-flex items-center gap-1.5 text-sm"
+        className="text-ink-muted hover:text-ink inline-flex min-h-10 items-center gap-1.5 text-sm"
       >
         <ArrowLeft className="size-4" aria-hidden /> All roles
       </Link>
 
       <Card>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Field
             label="Role name"
             htmlFor="role-name"
@@ -172,9 +173,10 @@ export function PermissionMatrix({
           </div>
         </div>
 
-        <div className="-mx-6 overflow-x-auto px-6">
-          <table className="w-full text-sm">
-            <thead>
+        {/* Phones: each area is a card with labelled checkboxes */}
+        <div className="-mx-4 overflow-x-auto px-4 sm:-mx-6 sm:px-6">
+          <table className="w-full text-sm max-md:block">
+            <thead className="max-md:hidden">
               <tr className="text-ink-muted border-border border-b text-xs tracking-wide uppercase">
                 <th className="py-2.5 text-left font-medium">Area</th>
                 {ACTION_ORDER.map((a) => (
@@ -185,7 +187,7 @@ export function PermissionMatrix({
                 <th className="px-3 py-2.5 text-left font-medium">Special</th>
               </tr>
             </thead>
-            <tbody className="divide-border divide-y">
+            <tbody className="divide-border divide-y max-md:block">
               {PERMISSION_GROUPS.map((g) => {
                 const crud = ACTION_ORDER.map((a) =>
                   g.permissions.find((p) => p === `${g.resource}:${a}`),
@@ -194,29 +196,43 @@ export function PermissionMatrix({
                   (p) => !ACTION_ORDER.includes(p.split(":")[1] ?? ""),
                 );
                 return (
-                  <tr key={g.resource} className="hover:bg-surface-muted/60">
-                    <th scope="row" className="py-3 pr-4 text-left font-medium">
+                  <tr
+                    key={g.resource}
+                    className="hover:bg-surface-muted/60 max-md:flex max-md:flex-wrap max-md:items-center max-md:gap-x-5 max-md:gap-y-1 max-md:py-3"
+                  >
+                    <th
+                      scope="row"
+                      className="py-3 pr-4 text-left font-medium max-md:w-full max-md:py-0"
+                    >
                       <button
                         type="button"
                         disabled={readOnly}
                         onClick={() => toggleRow(g.permissions)}
-                        className="hover:underline disabled:no-underline"
+                        className="inline-flex min-h-6 items-center hover:underline disabled:no-underline"
                         title={readOnly ? undefined : "Toggle all in this row"}
                       >
                         {LABELS[g.resource] ?? g.resource}
                       </button>
                     </th>
                     {crud.map((p, i) => (
-                      <td key={ACTION_ORDER[i]} className="px-3 py-3 text-center">
+                      <td
+                        key={ACTION_ORDER[i]}
+                        className={cn("px-3 py-3 text-center max-md:p-0", !p && "max-md:hidden")}
+                      >
                         {p ? (
-                          <input
-                            type="checkbox"
-                            className="accent-primary-strong size-4"
-                            checked={selected.has(p)}
-                            disabled={readOnly}
-                            onChange={() => toggle(p)}
-                            aria-label={`${LABELS[g.resource] ?? g.resource}: ${ACTION_ORDER[i]}`}
-                          />
+                          <label className="inline-flex min-h-7 items-center gap-2">
+                            <input
+                              type="checkbox"
+                              className="accent-primary-strong size-4"
+                              checked={selected.has(p)}
+                              disabled={readOnly}
+                              onChange={() => toggle(p)}
+                              aria-label={`${LABELS[g.resource] ?? g.resource}: ${ACTION_ORDER[i]}`}
+                            />
+                            <span className="text-ink-muted md:hidden" aria-hidden>
+                              {ACTION_ORDER[i]}
+                            </span>
+                          </label>
                         ) : (
                           <span className="text-border" aria-hidden>
                             —
@@ -224,10 +240,13 @@ export function PermissionMatrix({
                         )}
                       </td>
                     ))}
-                    <td className="px-3 py-3">
+                    <td className={cn("px-3 py-3 max-md:p-0", !special.length && "max-md:hidden")}>
                       <div className="flex flex-wrap gap-x-4 gap-y-2">
                         {special.map((p) => (
-                          <label key={p} className="flex items-center gap-2 whitespace-nowrap">
+                          <label
+                            key={p}
+                            className="flex min-h-7 items-center gap-2 whitespace-nowrap"
+                          >
                             <input
                               type="checkbox"
                               className="accent-primary-strong size-4"

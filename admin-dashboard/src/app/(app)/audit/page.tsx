@@ -66,7 +66,7 @@ export default async function AuditPage({ searchParams }: PageProps<"/audit">) {
       </form>
 
       {rows.length ? (
-        <Table>
+        <Table stack>
           <THead>
             <tr>
               <TH>When</TH>
@@ -89,12 +89,12 @@ export default async function AuditPage({ searchParams }: PageProps<"/audit">) {
                     {r.action}
                   </Badge>
                 </TD>
-                <TD>
-                  <p>{r.summary}</p>
+                <TD className="max-md:w-full">
+                  <p className="break-words">{r.summary}</p>
                   {r.diff ? (
                     <details className="mt-1">
                       <summary className="text-ink-muted cursor-pointer text-xs">Changes</summary>
-                      <pre className="bg-surface-muted rounded-control mt-1 max-w-md overflow-x-auto p-2 text-xs">
+                      <pre className="bg-surface-muted rounded-control mt-1 max-w-full overflow-x-auto p-2 text-xs md:max-w-md">
                         {JSON.stringify(r.diff, null, 2)}
                       </pre>
                     </details>

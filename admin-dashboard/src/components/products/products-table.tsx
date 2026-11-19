@@ -112,7 +112,7 @@ function InlineCell({
         setDraft(field === "priceCents" ? (value / 100).toFixed(2) : String(value));
         setEditing(true);
       }}
-      className="hover:border-border rounded-control -mx-1.5 border border-transparent px-1.5 py-0.5 tabular-nums"
+      className="hover:border-border rounded-control -mx-1.5 inline-flex min-h-7 min-w-7 items-center justify-center border border-transparent px-1.5 py-0.5 tabular-nums"
       title="Click to edit"
     >
       {show}
@@ -173,7 +173,7 @@ export function ProductsTable({
       <div className="border-border flex flex-wrap items-center gap-2 border-b p-4">
         <form
           role="search"
-          className="relative min-w-56 flex-1"
+          className="relative w-full min-w-0 sm:w-auto sm:min-w-56 sm:flex-1"
           onSubmit={(e) => {
             e.preventDefault();
             setParam({ q: q.trim() || null });
@@ -195,7 +195,7 @@ export function ProductsTable({
           aria-label="Status"
           value={sp.get("status") ?? ""}
           onChange={(e) => setParam({ status: e.target.value || null })}
-          className="w-36"
+          className="min-w-0 flex-1 sm:w-36 sm:flex-none"
         >
           <option value="">All statuses</option>
           <option value="active">Active</option>
@@ -206,7 +206,7 @@ export function ProductsTable({
           aria-label="Category"
           value={sp.get("category") ?? ""}
           onChange={(e) => setParam({ category: e.target.value || null })}
-          className="w-44"
+          className="min-w-0 flex-1 sm:w-44 sm:flex-none"
         >
           <option value="">All categories</option>
           {categories.map((c) => (
@@ -219,7 +219,7 @@ export function ProductsTable({
           aria-label="Stock"
           value={sp.get("stock") ?? ""}
           onChange={(e) => setParam({ stock: e.target.value || null })}
-          className="w-36"
+          className="min-w-0 flex-1 sm:w-36 sm:flex-none"
         >
           <option value="">Any stock</option>
           <option value="low">Low (1–5)</option>
@@ -295,8 +295,138 @@ export function ProductsTable({
         </div>
       ) : null}
 
-      <div className="overflow-x-auto">
-        <Table>
+      {/* Phones: stacked cards instead of a wide table */}
+      <ul className="divide-border divide-y md:hidden" aria-label="Products">
+        {rows.length ? (
+          <li className="flex items-center gap-3 px-4 py-2">
+            <label className="text-ink-muted flex min-h-10 items-center gap-3 text-xs">
+              <input
+                type="checkbox"
+                className="accent-primary-strong size-5"
+                checked={allChecked}
+                onChange={() => setChecked(allChecked ? new Set() : new Set(rows.map((r) => r.id)))}
+              />
+              Select all
+            </label>
+          </li>
+        ) : null}
+        {rows.map((r) => (
+          <li key={r.id} className="flex gap-3 px-4 py-3">
+            <label className="flex min-h-10 items-start pt-2.5">
+              <input
+                type="checkbox"
+                className="accent-primary-strong size-5"
+                checked={checked.has(r.id)}
+                onChange={() =>
+                  setChecked((s) => {
+                    const n = new Set(s);
+                    if (n.has(r.id)) n.delete(r.id);
+                    else n.add(r.id);
+                    return n;
+                  })
+                }
+                aria-label={`Select ${r.title}`}
+              />
+            </label>
+            <div className="min-w-0 flex-1">
+              <Link href={`/products/${r.id}` as Route} className="flex items-center gap-3">
+                <span className="bg-surface-muted rounded-control relative size-14 shrink-0 overflow-hidden">
+                  {r.image ? (
+                    <Image
+                      src={storefrontLink(r.image)}
+                      alt=""
+                      fill
+                      sizes="56px"
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : null}
+                </span>
+                <span className="min-w-0">
+                  <span className="flex items-center gap-1 font-medium">
+                    <span className="truncate">{r.title}</span>
+                    {r.isFeatured ? (
+                      <Star
+                        className="text-warning-ink size-3.5 shrink-0 fill-current"
+                        aria-label="Featured"
+                      />
+                    ) : null}
+                  </span>
+                  <span className="text-ink-muted mt-0.5 block truncate text-xs">
+                    {r.variantCount} variant{r.variantCount === 1 ? "" : "s"}
+                    {r.categoryNames ? ` · ${r.categoryNames}` : ""}
+                  </span>
+                </span>
+              </Link>
+              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+                <Badge tone={STATUS_TONE[r.status]}>{r.status}</Badge>
+                <span className="flex items-center gap-1">
+                  <span className="text-ink-muted text-xs">Price</span>
+                  {r.singleVariantId ? (
+                    <InlineCell
+                      variantId={r.singleVariantId}
+                      field="priceCents"
+                      value={r.minPrice}
+                      disabled={!can.update}
+                    />
+                  ) : (
+                    <span className="tabular-nums">
+                      {r.minPrice === r.maxPrice
+                        ? money(r.minPrice)
+                        : `${money(r.minPrice)}–${money(r.maxPrice)}`}
+                    </span>
+                  )}
+                </span>
+                <span
+                  className={cn(
+                    "flex items-center gap-1",
+                    r.stock === 0 ? "text-danger" : r.stock <= 5 ? "text-warning-ink" : "",
+                  )}
+                >
+                  <span className="text-ink-muted text-xs">Stock</span>
+                  {r.singleVariantId ? (
+                    <InlineCell
+                      variantId={r.singleVariantId}
+                      field="stockQty"
+                      value={r.stock}
+                      disabled={!can.update}
+                    />
+                  ) : (
+                    <span className="tabular-nums">{r.stock}</span>
+                  )}
+                </span>
+              </div>
+            </div>
+            {can.create ? (
+              <button
+                type="button"
+                title="Duplicate"
+                aria-label={`Duplicate ${r.title}`}
+                disabled={pending}
+                className="text-ink-muted hover:text-ink -mr-2 flex size-10 shrink-0 items-center justify-center"
+                onClick={() =>
+                  startTransition(async () => {
+                    const res = await duplicateProductAction(r.id);
+                    if (!res.ok) toast.error(res.error);
+                    else {
+                      toast.success("Duplicated as a draft");
+                      router.push(`/products/${res.data.id}` as Route);
+                    }
+                  })
+                }
+              >
+                <Copy className="size-4" aria-hidden />
+              </button>
+            ) : null}
+          </li>
+        ))}
+        {!rows.length ? (
+          <li className="text-ink-muted py-16 text-center text-sm">No products match.</li>
+        ) : null}
+      </ul>
+
+      <div className="hidden md:block">
+        <Table bleed={false}>
           <THead>
             <TR>
               <TH className="w-10">

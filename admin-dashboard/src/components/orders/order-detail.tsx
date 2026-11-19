@@ -66,18 +66,21 @@ export function OrderDetail({ order, can }: { order: Detail; can: Can }) {
         </div>
 
         {/* Stepper */}
-        <ol className="mt-6 grid grid-cols-6 gap-1" aria-label="Order progress">
+        <ol
+          className="mt-6 flex flex-col gap-2 sm:grid sm:grid-cols-6 sm:gap-1"
+          aria-label="Order progress"
+        >
           {ORDER_FLOW.map((s, i) => {
             const done = !terminal && i <= reached;
             return (
               <li
                 key={s}
-                className="flex flex-col items-center gap-1.5 text-center"
+                className="flex items-center gap-3 sm:flex-col sm:gap-1.5 sm:text-center"
                 aria-current={i === reached && !terminal ? "step" : undefined}
               >
                 <span
                   className={cn(
-                    "flex size-7 items-center justify-center rounded-full border text-xs",
+                    "flex size-7 shrink-0 items-center justify-center rounded-full border text-xs",
                     done
                       ? "bg-primary-strong border-primary-strong text-on-strong"
                       : "border-border text-ink-muted",
@@ -87,7 +90,7 @@ export function OrderDetail({ order, can }: { order: Detail; can: Can }) {
                 </span>
                 <span
                   className={cn(
-                    "text-[0.6875rem] leading-tight",
+                    "text-sm leading-tight sm:text-[0.6875rem]",
                     done ? "text-ink" : "text-ink-muted",
                   )}
                 >
@@ -116,7 +119,7 @@ export function OrderDetail({ order, can }: { order: Detail; can: Can }) {
         </div>
       </Card>
 
-      <div className="grid gap-6 2xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
         <Card>
           <CardTitle className="mb-3">Items</CardTitle>
           <ul className="divide-border divide-y">
@@ -193,7 +196,7 @@ export function OrderDetail({ order, can }: { order: Detail; can: Can }) {
             {order.customerHistory && order.customerId && can.customers ? (
               <Link
                 href={`/customers/${order.customerId}` as Route}
-                className="text-accent-ink mt-1 inline-block text-xs hover:underline"
+                className="text-accent-ink mt-1 inline-flex min-h-6 items-center text-xs hover:underline"
               >
                 {order.customerHistory.orders} order{order.customerHistory.orders === 1 ? "" : "s"}{" "}
                 · {money(order.customerHistory.spent)} lifetime
@@ -224,7 +227,7 @@ export function OrderDetail({ order, can }: { order: Detail; can: Can }) {
         </div>
       </div>
 
-      <div className="grid gap-6 2xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 2xl:grid-cols-2">
         <Card>
           <CardTitle className="mb-3">Tracking</CardTitle>
           <TrackingForm

@@ -72,7 +72,7 @@ export function MessagesInbox({
           </button>
         ))}
       </div>
-      <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
         <Card className="p-0">
           <ul
             className="divide-border max-h-[70svh] divide-y overflow-y-auto"
@@ -82,7 +82,13 @@ export function MessagesInbox({
               <li key={m.id}>
                 <button
                   type="button"
-                  onClick={() => setOpenId(m.id)}
+                  onClick={() => {
+                    setOpenId(m.id);
+                    if (window.matchMedia("(max-width: 1023px)").matches)
+                      document
+                        .getElementById("message-detail")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
                   aria-current={open?.id === m.id ? "true" : undefined}
                   className={cn(
                     "w-full px-4 py-3 text-left",
@@ -110,11 +116,11 @@ export function MessagesInbox({
           </ul>
         </Card>
         {open ? (
-          <Card>
+          <Card id="message-detail" className="scroll-mt-20">
             <div className="border-border flex flex-wrap items-start justify-between gap-3 border-b pb-4">
               <div>
-                <h2 className="text-lg font-semibold">{open.subject}</h2>
-                <p className="text-ink-muted text-sm">
+                <h2 className="text-lg font-semibold break-words">{open.subject}</h2>
+                <p className="text-ink-muted text-sm break-words">
                   {open.name} &lt;{open.email}&gt; · <LocalTime value={open.createdAt} />
                 </p>
               </div>
@@ -177,7 +183,9 @@ export function MessagesInbox({
                 ) : null}
               </div>
             </div>
-            <p className="pt-4 text-sm leading-relaxed whitespace-pre-wrap">{open.message}</p>
+            <p className="pt-4 text-sm leading-relaxed break-words whitespace-pre-wrap">
+              {open.message}
+            </p>
           </Card>
         ) : null}
       </div>

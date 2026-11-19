@@ -27,11 +27,11 @@ export default async function CustomerPage({ params }: PageProps<"/customers/[id
     <div className="space-y-6">
       <Link
         href={"/customers"}
-        className="text-ink-muted hover:text-ink inline-flex items-center gap-1.5 text-sm"
+        className="text-ink-muted hover:text-ink inline-flex min-h-10 items-center gap-1.5 text-sm"
       >
         <ArrowLeft className="size-4" aria-hidden /> Customers
       </Link>
-      <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
         <Card className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold">{c.name}</h2>
@@ -76,7 +76,7 @@ export default async function CustomerPage({ params }: PageProps<"/customers/[id
         </Card>
         <Card className="p-0">
           <CardTitle className="p-5 pb-3">Order history</CardTitle>
-          <Table>
+          <Table bleed={false} stack>
             <THead>
               <TR>
                 <TH>Order</TH>

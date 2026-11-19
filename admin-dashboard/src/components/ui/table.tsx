@@ -1,11 +1,35 @@
 import type { HTMLAttributes, TdHTMLAttributes, ThHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-/** Table styles from the reference: muted small-caps header, hairline rows, roomy cells. */
-export function Table({ className, ...props }: HTMLAttributes<HTMLTableElement>) {
+/**
+ * Table styles from the reference: muted small-caps header, hairline rows, roomy cells.
+ * Inside a padded Card the scroll area bleeds to the card edges (`bleed`); in an unpadded
+ * card (`p-0`) it adds the padding itself instead.
+ */
+export function Table({
+  className,
+  bleed = true,
+  stack = false,
+  ...props
+}: HTMLAttributes<HTMLTableElement> & {
+  bleed?: boolean;
+  /**
+   * Below `md`, render each row as a wrapped "card" (header hidden, first cell full width)
+   * instead of a horizontally scrolling table.
+   */
+  stack?: boolean;
+}) {
   return (
-    <div className="-mx-6 overflow-x-auto px-6">
-      <table className={cn("w-full text-left text-sm", className)} {...props} />
+    <div className={cn("overflow-x-auto px-4 sm:px-6", bleed && "-mx-4 sm:-mx-6")}>
+      <table
+        className={cn(
+          "w-full text-left text-sm",
+          stack &&
+            "max-md:block max-md:[&_tbody]:block max-md:[&_td]:p-0 max-md:[&_td:first-child]:w-full max-md:[&_thead]:hidden max-md:[&_tr]:flex max-md:[&_tr]:flex-wrap max-md:[&_tr]:items-center max-md:[&_tr]:gap-x-3 max-md:[&_tr]:gap-y-1.5 max-md:[&_tr]:py-3",
+          className,
+        )}
+        {...props}
+      />
     </div>
   );
 }

@@ -59,7 +59,15 @@ export function OrdersInbox({
     }
     router.replace(`${pathname}?${p.toString()}` as Route, { scroll: false });
   };
-  const select = (n: string) => setParam({ selected: n });
+  const select = (n: string) => {
+    setParam({ selected: n });
+    // List and detail are stacked below xl: bring the detail into view.
+    if (window.matchMedia("(max-width: 1279px)").matches) {
+      document
+        .getElementById("order-detail")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   // J / K keyboard navigation through the list (ignored while typing).
   useEffect(() => {
@@ -299,7 +307,7 @@ export function OrdersInbox({
             type="button"
             onClick={exportCsv}
             disabled={pending}
-            className="text-ink-muted hover:text-ink ml-auto inline-flex items-center gap-1"
+            className="text-ink-muted hover:text-ink -my-1 ml-auto inline-flex min-h-7 items-center gap-1 px-1"
           >
             <Download className="size-3.5" aria-hidden /> CSV
           </button>
@@ -307,7 +315,7 @@ export function OrdersInbox({
       </div>
 
       <ul
-        className="divide-border max-h-[calc(100svh-22rem)] min-h-64 divide-y overflow-y-auto"
+        className="divide-border max-h-[60svh] min-h-64 divide-y overflow-y-auto xl:max-h-[calc(100svh-22rem)]"
         aria-label="Orders"
       >
         {rows.map((r) => {

@@ -272,7 +272,7 @@ export function ProductEditor({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href={"/products"}
-          className="text-ink-muted hover:text-ink inline-flex items-center gap-1.5 text-sm"
+          className="text-ink-muted hover:text-ink inline-flex min-h-10 items-center gap-1.5 text-sm"
         >
           <ArrowLeft className="size-4" aria-hidden /> Products
         </Link>
@@ -282,7 +282,7 @@ export function ProductEditor({
               href={storefrontLink(`/products/${product.slug}`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent-ink text-sm hover:underline"
+              className="text-accent-ink inline-flex min-h-10 items-center text-sm hover:underline"
             >
               View in store
             </a>
@@ -304,7 +304,10 @@ export function ProductEditor({
         </div>
       </div>
 
-      <fieldset disabled={readOnly} className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <fieldset
+        disabled={readOnly}
+        className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_340px]"
+      >
         <div className="min-w-0 space-y-6">
           <Card className="space-y-4">
             <Field label="Title" htmlFor="title">
@@ -343,7 +346,7 @@ export function ProductEditor({
                 onChange={(e) => set("description", e.target.value)}
               />
             </Field>
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <Field label="Dimensions" htmlFor="dim">
                 <Input
                   id="dim"
@@ -443,7 +446,7 @@ export function ProductEditor({
                         <div className="flex">
                           <button
                             type="button"
-                            className="text-ink-muted hover:text-ink p-1 disabled:opacity-30"
+                            className="text-ink-muted hover:text-ink p-1.5 disabled:opacity-30"
                             disabled={i === 0}
                             onClick={() => moveImage(i, -1)}
                             aria-label="Move earlier"
@@ -452,7 +455,7 @@ export function ProductEditor({
                           </button>
                           <button
                             type="button"
-                            className="text-ink-muted hover:text-ink p-1 disabled:opacity-30"
+                            className="text-ink-muted hover:text-ink p-1.5 disabled:opacity-30"
                             disabled={i === form.images.length - 1}
                             onClick={() => moveImage(i, 1)}
                             aria-label="Move later"
@@ -462,7 +465,7 @@ export function ProductEditor({
                         </div>
                         <button
                           type="button"
-                          className="text-danger p-1"
+                          className="text-danger p-1.5"
                           onClick={() =>
                             set(
                               "images",
@@ -509,7 +512,7 @@ export function ProductEditor({
 
           <Card className="space-y-4">
             <CardTitle>Pricing</CardTitle>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label={hasOptions ? "Default price (new variants)" : "Price"} htmlFor="price">
                 <MoneyInput
                   id="price"
@@ -530,7 +533,7 @@ export function ProductEditor({
               </Field>
             </div>
             {!hasOptions && single ? (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field label="SKU" htmlFor="sku">
                   <Input
                     id="sku"
@@ -614,7 +617,7 @@ export function ProductEditor({
                       >
                         <input
                           aria-label={`${o.name || "Option"} value ${vi + 1}`}
-                          className="w-24 bg-transparent text-sm outline-none"
+                          className="h-7 w-24 bg-transparent text-sm outline-none"
                           value={v.value}
                           placeholder="Value"
                           onChange={(e) =>
@@ -636,7 +639,7 @@ export function ProductEditor({
                           type="color"
                           aria-label="Swatch colour"
                           title="Swatch colour (optional)"
-                          className="size-5 cursor-pointer rounded-full border-0 bg-transparent p-0"
+                          className="size-7 cursor-pointer rounded-full border-0 bg-transparent p-0"
                           value={v.swatchHex ?? "#9caf88"}
                           onChange={(e) =>
                             setOptions(
@@ -656,7 +659,7 @@ export function ProductEditor({
                         <button
                           type="button"
                           aria-label="Remove value"
-                          className="text-ink-muted hover:text-ink p-1"
+                          className="text-ink-muted hover:text-ink p-1.5"
                           onClick={() =>
                             setOptions(
                               form.options.map((x, j) =>
@@ -693,8 +696,9 @@ export function ProductEditor({
 
             {hasOptions ? (
               <div className="mt-5 overflow-x-auto">
-                <table className="w-full min-w-[640px] text-sm">
-                  <thead className="text-ink-muted text-left text-xs">
+                {/* Phones: each variant is a small card with labelled fields */}
+                <table className="w-full text-sm max-md:block md:min-w-[640px]">
+                  <thead className="text-ink-muted text-left text-xs max-md:hidden">
                     <tr>
                       <th className="py-2 pr-3 font-medium">Variant</th>
                       <th className="py-2 pr-3 font-medium">SKU</th>
@@ -704,43 +708,61 @@ export function ProductEditor({
                       <th className="py-2 font-medium">Active</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-border divide-y">
+                  <tbody className="divide-border divide-y max-md:block">
                     {form.variants.map((v, i) => (
-                      <tr key={v.key} className={cn(!v.isActive && "opacity-60")}>
-                        <td className="py-2 pr-3 font-medium whitespace-nowrap">
+                      <tr
+                        key={v.key}
+                        className={cn(
+                          "max-md:grid max-md:grid-cols-2 max-md:gap-3 max-md:py-4",
+                          !v.isActive && "opacity-60",
+                        )}
+                      >
+                        <td className="py-2 pr-3 font-medium whitespace-nowrap max-md:col-span-2 max-md:p-0">
                           {v.key.split("|").join(" / ") || "Default"}
                         </td>
-                        <td className="py-2 pr-3">
+                        <td
+                          data-label="SKU"
+                          className="max-md:before:text-ink-muted py-2 pr-3 max-md:col-span-2 max-md:p-0 max-md:before:mb-1 max-md:before:block max-md:before:text-xs max-md:before:content-[attr(data-label)]"
+                        >
                           <Input
                             aria-label={`SKU for ${v.key}`}
-                            className="h-8 w-52"
+                            className="h-8 w-full md:w-52"
                             value={v.sku}
                             onChange={(e) => setVariant(i, { sku: e.target.value.toUpperCase() })}
                           />
                         </td>
-                        <td className="w-32 py-2 pr-3">
+                        <td
+                          data-label="Price"
+                          className="max-md:before:text-ink-muted w-32 py-2 pr-3 max-md:w-auto max-md:p-0 max-md:before:mb-1 max-md:before:block max-md:before:text-xs max-md:before:content-[attr(data-label)]"
+                        >
                           <MoneyInput
                             id={`vp-${i}`}
                             cents={v.priceCents}
                             onChange={(c) => setVariant(i, { priceCents: c ?? 0 })}
                           />
                         </td>
-                        <td className="py-2 pr-3">
+                        <td
+                          data-label="Stock"
+                          className="max-md:before:text-ink-muted py-2 pr-3 max-md:p-0 max-md:before:mb-1 max-md:before:block max-md:before:text-xs max-md:before:content-[attr(data-label)]"
+                        >
                           <Input
                             aria-label={`Stock for ${v.key}`}
                             type="number"
                             min={0}
-                            className="h-8 w-20"
+                            className="h-8 w-full md:w-20"
                             value={v.stockQty}
                             onChange={(e) =>
                               setVariant(i, { stockQty: Math.max(0, Number(e.target.value) || 0) })
                             }
                           />
                         </td>
-                        <td className="py-2 pr-3">
+                        <td
+                          data-label="Image"
+                          className="max-md:before:text-ink-muted py-2 pr-3 max-md:p-0 max-md:before:mb-1 max-md:before:block max-md:before:text-xs max-md:before:content-[attr(data-label)]"
+                        >
                           <Select
                             aria-label={`Image for ${v.key}`}
-                            className="h-8 w-32 text-xs"
+                            className="h-8 w-full text-xs md:w-32"
                             value={v.imageUrl ?? ""}
                             onChange={(e) => setVariant(i, { imageUrl: e.target.value || null })}
                           >
@@ -752,7 +774,10 @@ export function ProductEditor({
                             ))}
                           </Select>
                         </td>
-                        <td className="py-2">
+                        <td
+                          data-label="Active"
+                          className="max-md:before:text-ink-muted py-2 max-md:p-0 max-md:before:mb-1 max-md:before:block max-md:before:text-xs max-md:before:content-[attr(data-label)]"
+                        >
                           <Checkbox
                             aria-label={`Active ${v.key}`}
                             checked={v.isActive}
@@ -874,7 +899,7 @@ export function ProductEditor({
                     <button
                       type="button"
                       aria-label={`Remove tag ${t}`}
-                      className="p-0.5"
+                      className="-my-1 p-1.5"
                       onClick={() =>
                         set(
                           "tags",

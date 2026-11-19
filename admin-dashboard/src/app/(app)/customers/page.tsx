@@ -23,20 +23,53 @@ export default async function CustomersPage({ searchParams }: PageProps<"/custom
   return (
     <Card className="p-0">
       <div className="border-border flex flex-wrap items-center gap-3 border-b p-4">
-        <form role="search" className="flex-1">
+        <form role="search" className="w-full min-w-0 sm:w-auto sm:flex-1">
           <Input
             name="q"
             defaultValue={q}
             placeholder="Search name, email or phone"
             aria-label="Search customers"
-            className="max-w-md"
+            className="sm:max-w-md"
           />
         </form>
         <span className="text-ink-muted text-sm">{total} customers</span>
         {session.can("data:export") ? <ExportCustomersButton q={q} /> : null}
       </div>
-      <div className="overflow-x-auto">
-        <Table>
+      {/* Phones: stacked cards */}
+      <ul className="divide-border divide-y md:hidden" aria-label="Customers">
+        {rows.map((c) => (
+          <li key={c.id}>
+            <Link
+              href={`/customers/${c.id}` as Route}
+              className="hover:bg-surface-muted block px-4 py-3"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate font-medium">{c.name}</p>
+                  <p className="text-ink-muted truncate text-xs">{c.email}</p>
+                </div>
+                <p className="shrink-0 text-sm font-medium tabular-nums">{money(c.totalSpent)}</p>
+              </div>
+              <p className="text-ink-muted mt-1.5 flex flex-wrap items-center gap-x-2 text-xs">
+                <span>
+                  {c.orderCount} order{c.orderCount === 1 ? "" : "s"}
+                </span>
+                {c.lastOrderAt ? (
+                  <span>
+                    · last <LocalTime value={c.lastOrderAt} format="date" />
+                  </span>
+                ) : null}
+                {c.acceptsMarketing ? <Badge tone="accent">Subscribed</Badge> : null}
+              </p>
+            </Link>
+          </li>
+        ))}
+        {!rows.length ? (
+          <li className="text-ink-muted py-16 text-center text-sm">No customers found.</li>
+        ) : null}
+      </ul>
+      <div className="hidden md:block">
+        <Table bleed={false}>
           <THead>
             <TR>
               <TH>Customer</TH>

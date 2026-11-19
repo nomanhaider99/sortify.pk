@@ -2,10 +2,16 @@ import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 /** White surface card with soft shadow and ~14px radius (admin-layout-notes.md). */
+/** Padding is 16px on phones and 24px from `sm` up, unless the caller sets its own `p-*`. */
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  const customPadding = /(^|\s)p-/.test(className ?? "");
   return (
     <div
-      className={cn("rounded-card border-border bg-surface shadow-card border p-6", className)}
+      className={cn(
+        "rounded-card border-border bg-surface shadow-card border",
+        !customPadding && "p-4 sm:p-6",
+        className,
+      )}
       {...props}
     />
   );

@@ -61,3 +61,13 @@
     outline-offset: 2px;
   }
 }
+
+/* Touch / narrow screens: 24px checkboxes and radios (WCAG 2.2 target size). Unlayered so it
+   overrides the size utilities used on desktop. */
+@media (max-width: 767px), (pointer: coarse) {
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}

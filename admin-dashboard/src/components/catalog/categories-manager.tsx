@@ -197,7 +197,10 @@ export function CategoriesManager({
                 if (from !== -1) move(from, i);
               }}
               onDragEnd={() => setDragId(null)}
-              className={cn("flex items-center gap-3 px-4 py-3", dragId === c.id && "opacity-50")}
+              className={cn(
+                "flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3",
+                dragId === c.id && "opacity-50",
+              )}
             >
               {can.update ? (
                 <GripVertical className="text-ink-muted size-4 shrink-0 cursor-grab" aria-hidden />
@@ -215,8 +218,8 @@ export function CategoriesManager({
                 ) : null}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="font-medium">{c.name}</p>
-                <p className="text-ink-muted text-xs">
+                <p className="truncate font-medium">{c.name}</p>
+                <p className="text-ink-muted truncate text-xs">
                   /{c.slug} · {c.productCount} product{c.productCount === 1 ? "" : "s"}
                 </p>
               </div>
@@ -224,63 +227,66 @@ export function CategoriesManager({
                 {!c.isVisible ? <Badge tone="neutral">Hidden</Badge> : null}
                 {c.isVisible && !c.showInMenu ? <Badge tone="neutral">Not in menu</Badge> : null}
               </div>
-              {can.update ? (
-                <div className="flex">
-                  {/* Keyboard alternative to drag-and-drop */}
+              {/* Actions: own row on phones, inline from sm */}
+              <div className="flex w-full justify-end sm:w-auto">
+                {can.update ? (
+                  <div className="flex">
+                    {/* Keyboard/touch alternative to drag-and-drop */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Move ${c.name} up`}
+                      disabled={i === 0 || pending}
+                      onClick={() => move(i, i - 1)}
+                    >
+                      <ArrowUp aria-hidden />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Move ${c.name} down`}
+                      disabled={i === list.length - 1 || pending}
+                      onClick={() => move(i, i + 1)}
+                    >
+                      <ArrowDown aria-hidden />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Edit ${c.name}`}
+                      onClick={() => setEditing(c)}
+                    >
+                      <Pencil aria-hidden />
+                    </Button>
+                  </div>
+                ) : null}
+                {can.delete ? (
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label={`Move ${c.name} up`}
-                    disabled={i === 0 || pending}
-                    onClick={() => move(i, i - 1)}
-                  >
-                    <ArrowUp aria-hidden />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label={`Move ${c.name} down`}
-                    disabled={i === list.length - 1 || pending}
-                    onClick={() => move(i, i + 1)}
-                  >
-                    <ArrowDown aria-hidden />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label={`Edit ${c.name}`}
-                    onClick={() => setEditing(c)}
-                  >
-                    <Pencil aria-hidden />
-                  </Button>
-                </div>
-              ) : null}
-              {can.delete ? (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-danger"
-                  aria-label={`Delete ${c.name}`}
-                  onClick={() => {
-                    if (
-                      !window.confirm(
-                        `Delete “${c.name}”? Products stay, but are removed from this category.`,
+                    className="text-danger"
+                    aria-label={`Delete ${c.name}`}
+                    onClick={() => {
+                      if (
+                        !window.confirm(
+                          `Delete “${c.name}”? Products stay, but are removed from this category.`,
+                        )
                       )
-                    )
-                      return;
-                    startTransition(async () => {
-                      const r = await deleteCategoryAction(c.id);
-                      if (!r.ok) toast.error(r.error);
-                      else {
-                        toast.success("Category deleted");
-                        router.refresh();
-                      }
-                    });
-                  }}
-                >
-                  <Trash2 aria-hidden />
-                </Button>
-              ) : null}
+                        return;
+                      startTransition(async () => {
+                        const r = await deleteCategoryAction(c.id);
+                        if (!r.ok) toast.error(r.error);
+                        else {
+                          toast.success("Category deleted");
+                          router.refresh();
+                        }
+                      });
+                    }}
+                  >
+                    <Trash2 aria-hidden />
+                  </Button>
+                ) : null}
+              </div>
             </li>
           ))}
           {!list.length ? (

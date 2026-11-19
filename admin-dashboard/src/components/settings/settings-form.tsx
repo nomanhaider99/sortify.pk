@@ -89,7 +89,7 @@ export function SettingsForm({
           <CardTitle>{title}</CardTitle>
           {description ? <CardDescription>{description}</CardDescription> : null}
         </div>
-        <fieldset disabled={disabled} className="grid gap-4 sm:grid-cols-2">
+        <fieldset disabled={disabled} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {fields.map((f) => {
             const id = `${settingKey}-${f.name}`;
             const v = values[f.name];

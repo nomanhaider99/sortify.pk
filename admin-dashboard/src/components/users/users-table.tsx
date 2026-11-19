@@ -77,7 +77,7 @@ export function UsersTable({
             </Button>
           ) : null}
         </CardHeader>
-        <Table>
+        <Table stack>
           <THead>
             <tr>
               <TH>Name</TH>

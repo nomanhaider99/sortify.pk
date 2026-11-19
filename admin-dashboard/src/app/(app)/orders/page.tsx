@@ -8,6 +8,7 @@ import {
   type PaymentStatus,
 } from "@repo/shared";
 import type { Metadata } from "next";
+import { BackToList } from "@/components/orders/back-to-list";
 import { OrderDetail } from "@/components/orders/order-detail";
 import { OrdersInbox } from "@/components/orders/orders-inbox";
 import { Card } from "@/components/ui/card";
@@ -42,7 +43,7 @@ export default async function OrdersPage({ searchParams }: PageProps<"/orders">)
   const detail = selected ? await getAdminOrderDetail(selected) : null;
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(380px,0.9fr)_minmax(0,1.4fr)]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[minmax(380px,0.9fr)_minmax(0,1.4fr)]">
       <OrdersInbox
         rows={rows.map((r) => ({ ...r, placedAt: r.placedAt.toISOString() }))}
         total={total}
@@ -56,7 +57,8 @@ export default async function OrdersPage({ searchParams }: PageProps<"/orders">)
           export: session.can("data:export"),
         }}
       />
-      <div className="xl:sticky xl:top-24 xl:self-start">
+      <div id="order-detail" className="scroll-mt-20 xl:sticky xl:top-24 xl:self-start">
+        {detail ? <BackToList /> : null}
         {detail ? (
           <OrderDetail
             order={detail}

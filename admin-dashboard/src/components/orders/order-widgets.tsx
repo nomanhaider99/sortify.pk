@@ -198,7 +198,7 @@ export function TrackingForm({
     setV((s) => ({ ...s, [k]: e.target.value }));
   return (
     <form
-      className="grid gap-3 sm:grid-cols-2"
+      className="grid grid-cols-1 gap-3 sm:grid-cols-2"
       onSubmit={(e) => {
         e.preventDefault();
         run(
@@ -269,7 +269,7 @@ export function EventForm({ orderNumber }: { orderNumber: string }) {
   const [isPublic, setIsPublic] = useState(true);
   return (
     <form
-      className="grid gap-3 sm:grid-cols-2"
+      className="grid grid-cols-1 gap-3 sm:grid-cols-2"
       onSubmit={(e) => {
         e.preventDefault();
         run(

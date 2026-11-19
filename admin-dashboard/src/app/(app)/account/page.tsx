@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Profile" };
 export default async function ProfilePage() {
   const session = await requirePagePermission();
   return (
-    <div className="grid max-w-4xl gap-6 lg:grid-cols-[1fr_320px]">
+    <div className="grid max-w-4xl grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
       <Card>
         <CardTitle>Your profile</CardTitle>
         <CardDescription className="mb-6">

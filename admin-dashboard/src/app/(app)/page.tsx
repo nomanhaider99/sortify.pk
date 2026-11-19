@@ -159,9 +159,9 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
         </nav>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1fr_340px]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
             {cards.map((c) => (
               <Card key={c.label} className="p-5">
                 <p className="text-ink-muted text-sm">{c.label}</p>
@@ -190,7 +190,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
             <RevenueChart data={kpis.series} />
           </Card>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <Card>
               <CardTitle className="mb-4">Orders by status</CardTitle>
               <StatusBars data={statusData} />
@@ -266,7 +266,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
                     <li key={v.sku} className="flex justify-between gap-3">
                       <Link
                         href={`/products/${v.productId}` as Route}
-                        className="truncate hover:underline"
+                        className="inline-flex min-h-7 min-w-0 items-center truncate hover:underline"
                       >
                         {v.title} <span className="text-ink-muted text-xs">{v.sku}</span>
                       </Link>
@@ -289,7 +289,10 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
             <Card>
               <CardHeader className="mb-2">
                 <CardTitle>Recent orders</CardTitle>
-                <Link href={"/orders"} className="text-accent-ink text-sm hover:underline">
+                <Link
+                  href={"/orders"}
+                  className="text-accent-ink inline-flex min-h-7 items-center text-sm hover:underline"
+                >
                   View all
                 </Link>
               </CardHeader>

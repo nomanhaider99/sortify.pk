@@ -105,12 +105,13 @@ Run both apps (`pnpm dev`) with seeded data, then:
 
 ## Testing
 
-| Command                                               | What it covers                                                                                                           |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `pnpm test`                                           | Unit tests (pricing, payments, order workflow, permissions, security rules, colour contrast of every token pair)         |
-| `pnpm build && pnpm test:e2e`                         | Playwright: purchase flows, admin workflow + RBAC, axe accessibility scan of every page, reduced motion, mobile overflow |
-| `node scripts/admin-smoke.mjs` / `commerce-smoke.mjs` | Scripted admin checks against a running admin on `:3101` (security flows / commerce modules)                             |
-| `node scripts/revalidate-e2e.mjs`                     | Admin edit → storefront updates immediately                                                                              |
+| Command                                                                          | What it covers                                                                                                                                              |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm test`                                                                      | Unit tests (pricing, payments, order workflow, permissions, security rules, colour contrast of every token pair)                                            |
+| `pnpm build && pnpm test:e2e`                                                    | Playwright: purchase flows, admin workflow + RBAC, axe accessibility scan of every page, reduced motion, mobile overflow                                    |
+| `node scripts/admin-smoke.mjs` / `commerce-smoke.mjs`                            | Scripted admin checks against a running admin on `:3101` (security flows / commerce modules)                                                                |
+| `node scripts/revalidate-e2e.mjs`                                                | Admin edit → storefront updates immediately                                                                                                                 |
+| `node scripts/mobile-audit.mjs [storeUrl]` / `admin-mobile-audit.mjs [adminUrl]` | Phone-width audit (320/375/414px) of every page and overlay: sideways scrolling, off-screen content, overflowing text, small tap targets; saves screenshots |
 
 `pnpm test:e2e` **wipes and reseeds a local database** (it refuses non-local hosts) and starts the
 PGlite server and both production builds on `:3100`/`:3101` itself. If Playwright's Chromium isn't

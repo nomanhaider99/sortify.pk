@@ -24,7 +24,7 @@ export default async function RolesPage() {
         </div>
         {session.can("roles:create") ? <NewRoleButton /> : null}
       </CardHeader>
-      <Table>
+      <Table stack>
         <THead>
           <tr>
             <TH>Role</TH>

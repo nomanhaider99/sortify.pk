@@ -478,16 +478,16 @@ Scripts at root: `pnpm dev` (both apps), `pnpm dev:store`, `pnpm dev:admin`, `pn
 - [x] Audit logging utility wired into all mutations
 
 ### M8 — Admin Commerce Modules
-- [ ] Dashboard analytics & needs-attention panel
-- [ ] Orders list (filters, saved views, bulk) + detail with status workflow, tracking panel, notes, invoice print
-- [ ] Products CRUD with options/variants builder, image uploads, bulk actions
-- [ ] Categories CRUD with drag-sort
-- [ ] Reviews moderation (approve/reject/feature) + revalidation + rating aggregates
-- [ ] Customers, Messages, Settings (hero, announcement, shipping, payments), Audit log, Profile
-- [ ] Live new-order notification
+- [x] Dashboard analytics & needs-attention panel
+- [x] Orders list (filters, saved views, bulk) + detail with status workflow, tracking panel, notes, invoice print
+- [x] Products CRUD with options/variants builder, image uploads, bulk actions
+- [x] Categories CRUD with drag-sort
+- [x] Reviews moderation (approve/reject/feature) + revalidation + rating aggregates
+- [x] Customers, Messages, Settings (hero, announcement, shipping, payments), Audit log, Profile
+- [x] Live new-order notification
 
 ### M9 — Integration, Polish, QA
-- [ ] Storefront reads settings/hero/announcement from admin-managed data; revalidation webhook
+- [x] Storefront reads settings/hero/announcement from admin-managed data; revalidation webhook
 - [ ] Animation polish pass on every page; reduced-motion pass
 - [ ] Accessibility + Lighthouse pass; image optimization
 - [ ] Unit + Playwright E2E tests; fix bugs
@@ -537,6 +537,18 @@ _(Claude Code: record any decision that deviates from or extends this plan.)_
 | 2026-11-19 | Invites (48 h) and admin-initiated password resets (2 h) are one-time tokens stored as SHA-256 hashes; with no mailer, the link is shown in a copyable dialog | PLAN §6.2 fallback when email isn't configured. |
 | 2026-11-19 | System roles keep their names; Owner's permissions are immutable; custom roles can be created/edited/deleted (only when unassigned). Guards prevent removing the last active Owner and acting on yourself (role change, disable, delete) | PLAN §6.3 "cannot be locked out". |
 | 2026-11-19 | `scripts/admin-smoke.mjs`: browser test of the admin security flows (redirects, generic errors, forced password change, invite → accept → RBAC sidebar + 403, audit entries, instant revocation, lockout) | Covers the PLAN §8 RBAC flow until the Playwright suites in M9. |
+| 2026-11-19 | Order workflow rules live in `@repo/shared/order-workflow` (`planTransition`: allowed moves, timestamps, payment-status changes, restock on cancel, public tracking event; `permissionForTransition`; `nextAction`) and are applied in one `SELECT … FOR UPDATE` transaction (`transitionOrder`). COD orders become paid on delivery; cancelling a paid order marks it refunded | Pure, unit-tested rules; no race between two staff moving the same order. |
+| 2026-11-19 | Orders UI is an **inbox split view** (list + action-first detail, `J`/`K` navigation, `?selected=` deep links — `/orders/[n]` redirects there). Saved views are fixed presets (Needs confirmation, Ready to ship, In transit, COD to collect) rather than user-defined | Matches §6.4 "action-first"; user-defined views deferred (§14). |
+| 2026-11-19 | Shipping without tracking opens a "Ship with tracking" dialog first. Refunds are status-only (`refunded`, no money movement in demo mode) | Customers always get tracking details; no real payment provider yet. |
+| 2026-11-19 | Images: **Cloudinary** signed upload when `CLOUDINARY_URL` is set; otherwise uploads are hidden and the editor offers the **image library** (every image URL already used by products/categories, read from the DB — the admin is a separate deployment and can't read the storefront's files) or a pasted `https://` URL. Admin thumbnails use `NEXT_PUBLIC_STOREFRONT_URL` for `/images/…` paths | Works with zero config; no file system coupling between the two apps. |
+| 2026-11-19 | Product saves are one transaction; variants are matched by option combination (`key` = values joined by `|`) so their ids survive edits (carts and order history reference them). Products are **soft-deleted**. New variants take the "Default price"; generated SKUs get a 3-char random token to stay unique | Order history must never break; found duplicate-SKU and $0-price bugs in QA. |
+| 2026-11-19 | Every admin mutation calls `revalidateStorefront()` → `POST /api/revalidate` on the storefront (shared `REVALIDATE_SECRET`, constant-time compare, allow-listed tags `catalog`/`settings`, relative paths only). The call never throws — the 5-min ISR timer is the fallback | Admin edits show on the storefront immediately (verified by `scripts/revalidate-e2e.mjs`). |
+| 2026-11-19 | Dashboard charts: **Recharts 3**, single-series in the brand green (`--chart-line`: `#4F6B3F` light / sage on dark), area chart with crosshair tooltip + screen-reader table, direct-labelled status bars. Daily buckets are UTC; deltas show "New" when the previous period is empty | One hue per chart (no categorical palette needed); avoids misleading "+100%". |
+| 2026-11-19 | Admin timestamps render through `<LocalTime>` (viewer's timezone after hydration) | Server time (UTC on Vercel) caused hydration mismatches and wrong local times. |
+| 2026-11-19 | Live new-order notifications: the shell polls a server action every 15 s while the tab is visible and shows a toast with an "Open" action | No websocket infra needed on Vercel; cheap query on an indexed column. |
+| 2026-11-19 | CSV exports (orders, customers) require `data:export`, are audited, and neutralise spreadsheet formula injection | Exports are a common data-leak/injection vector. |
+| 2026-11-19 | Local PGlite server pins each client to the session until its extended-protocol cycle ends (Sync / simple Query) | With storefront + admin both connected, interleaved Parse/Bind messages corrupted queries ("bind message supplies 1 parameters…"). Local-only; Neon is unaffected. |
+| 2026-11-19 | `scripts/commerce-smoke.mjs` (33 checks: dashboard, order workflow incl. ship dialog, notes/events, invoice/slip, product builder, categories, reviews, customers, messages, settings, audit, Editor/Manager RBAC) and `scripts/revalidate-e2e.mjs` | Covers M8 until the Playwright suites in M9; both are re-runnable on the same DB. |
 
 ## 14. Deferred / Future
 - Real payments (Stripe), real courier APIs, shipping labels
@@ -550,3 +562,5 @@ _(Claude Code: record any decision that deviates from or extends this plan.)_
 - Shared-store rate limiter (Upstash/Postgres) for multi-instance deployments (current limiter is in-memory per instance)
 - Transactional emails (order confirmation, status updates, contact notification) — needs the `mailer` adapter + `RESEND_API_KEY`; storefront copy does not promise emails until then
 - Server-side cart sync for logged-in customers (tables exist; depends on customer accounts)
+- User-defined saved order views (fixed presets ship in M8)
+- Real refunds through a payment provider (refunds are status-only in demo mode)

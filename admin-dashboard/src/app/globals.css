@@ -6,6 +6,9 @@
 
 :root {
   --accent-ink: #4f6b3f;
+  /* Single-series chart hue: dark green on light surfaces. */
+  --chart-line: #4f6b3f;
+  --chart-fill: #9caf88;
   color-scheme: light;
 }
 
@@ -30,6 +33,9 @@
   --success: #9caf88;
   /* Accent text colour: dark green on light, sage on dark. */
   --accent-ink: #9caf88;
+  /* Sage on dark surfaces (≥3:1 against #1b2318). */
+  --chart-line: #9caf88;
+  --chart-fill: #9caf88;
   color-scheme: dark;
 }
 

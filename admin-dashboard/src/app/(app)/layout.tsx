@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import type { QuickAction } from "@/components/shell/command-palette";
 import { AppShell } from "@/components/shell/app-shell";
+import { OrderNotifier } from "@/components/shell/order-notifier";
 import { filterNav } from "@/lib/nav";
 import { requirePagePermission } from "@/lib/session";
 
@@ -40,6 +41,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       }}
       actions={actions}
     >
+      {session.can("orders:view") ? <OrderNotifier /> : null}
       {children}
     </AppShell>
   );

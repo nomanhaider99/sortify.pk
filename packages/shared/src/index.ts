@@ -2,6 +2,7 @@ export * from "./brand";
 export * from "./constants";
 export * from "./money";
 export * from "./order-number";
+export * from "./order-workflow";
 export * from "./payments";
 export * from "./permissions";
 export * from "./pricing";

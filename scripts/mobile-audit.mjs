@@ -88,7 +88,11 @@ function inspect() {
     "a[href], button, input:not([type=hidden]), select, [role=radio], [role=tab]",
   )) {
     if (!visible(el) || el.closest("[aria-hidden=true]")) continue;
-    const r = el.getBoundingClientRect();
+    // A control inside a <label> is tapped through the whole label row.
+    const r =
+      el.tagName === "INPUT" && el.closest("label")
+        ? el.closest("label").getBoundingClientRect()
+        : el.getBoundingClientRect();
     if (r.width < 24 || r.height < 24) {
       // WCAG 2.2 target size (minimum) allows small inline links inside text
       const inline = el.tagName === "A" && getComputedStyle(el).display === "inline";

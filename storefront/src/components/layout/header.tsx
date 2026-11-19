@@ -45,7 +45,7 @@ export function Header({
       <div className="flex items-center">
         <Link
           href={routes.home}
-          className="text-[0.9375rem] font-medium tracking-[0.04em] whitespace-nowrap uppercase"
+          className="inline-flex min-h-11 items-center text-[0.9375rem] font-medium tracking-[0.04em] whitespace-nowrap uppercase"
         >
           {storeName}
           <span className="sr-only"> — home</span>

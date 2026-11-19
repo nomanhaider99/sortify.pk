@@ -39,8 +39,8 @@ export function Footer({ data }: { data: ShellData }) {
   return (
     <footer className="bg-ink text-on-strong">
       <div className="container-site pt-20 pb-10 md:pt-28">
-        <div className="grid gap-14 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
-          <Reveal>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:gap-x-10 lg:grid-cols-[1.3fr_1fr_1fr_1fr] lg:gap-14">
+          <Reveal className="col-span-2 lg:col-span-1">
             <h2 className="font-display text-display-md italic">Letters from the workshop</h2>
             <p className="text-on-strong/75 mt-3 max-w-sm text-sm">
               New collections, care guides and the occasional quiet sale. No noise, unsubscribe any
@@ -58,13 +58,13 @@ export function Footer({ data }: { data: ShellData }) {
                   {col.heading}
                 </h3>
               </RevealItem>
-              <ul className="mt-5 space-y-3">
+              <ul className="mt-4 space-y-1.5">
                 {col.links.map((l) => (
                   <li key={l.label}>
                     <RevealItem distance={12}>
                       <Link
                         href={l.href}
-                        className="text-on-strong/85 hover:text-on-strong text-sm transition-colors"
+                        className="text-on-strong/85 hover:text-on-strong inline-block py-1 text-sm transition-colors"
                       >
                         {l.label}
                       </Link>
@@ -75,7 +75,7 @@ export function Footer({ data }: { data: ShellData }) {
             </RevealGroup>
           ))}
 
-          <Reveal>
+          <Reveal className="col-span-2 lg:col-span-1">
             <h3 className="text-on-strong/60 text-xs font-medium tracking-[0.14em] uppercase">
               Visit
             </h3>

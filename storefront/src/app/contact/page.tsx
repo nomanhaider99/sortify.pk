@@ -134,7 +134,7 @@ export default async function ContactPage() {
                 <p className="text-xs font-medium tracking-[0.12em] uppercase">Email</p>
                 <a
                   href={`mailto:${store.email}`}
-                  className="text-ink-muted hover:text-ink mt-1 block text-sm"
+                  className="text-ink-muted hover:text-ink mt-1 inline-flex min-h-6 items-center text-sm"
                 >
                   {store.email}
                 </a>
@@ -150,7 +150,7 @@ export default async function ContactPage() {
                 <p className="text-xs font-medium tracking-[0.12em] uppercase">Phone</p>
                 <a
                   href={`tel:${store.phone.replace(/[^+\d]/g, "")}`}
-                  className="text-ink-muted hover:text-ink mt-1 block text-sm"
+                  className="text-ink-muted hover:text-ink mt-1 inline-flex min-h-6 items-center text-sm"
                 >
                   {store.phone}
                 </a>

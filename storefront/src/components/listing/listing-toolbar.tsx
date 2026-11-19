@@ -75,7 +75,7 @@ export function ListingToolbar({ total, facets }: { total: number; facets: Facet
             <button
               type="button"
               onClick={clearAll}
-              className="text-ink-muted hover:text-ink px-2 text-xs underline underline-offset-4"
+              className="text-ink-muted hover:text-ink inline-flex min-h-6 items-center px-2 text-xs underline underline-offset-4"
             >
               Clear all
             </button>

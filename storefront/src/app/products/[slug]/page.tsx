@@ -148,14 +148,17 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
         <nav aria-label="Breadcrumb" className="text-ink-muted mb-6 text-xs">
           <ol className="flex flex-wrap items-center gap-2">
             <li>
-              <Link href={routes.home} className="hover:text-ink">
+              <Link href={routes.home} className="hover:text-ink inline-flex min-h-6 items-center">
                 Home
               </Link>
             </li>
             {category ? (
               <li className="flex items-center gap-2">
                 <span aria-hidden>/</span>
-                <Link href={routes.category(category.slug)} className="hover:text-ink">
+                <Link
+                  href={routes.category(category.slug)}
+                  className="hover:text-ink inline-flex min-h-6 items-center"
+                >
                   {category.name}
                 </Link>
               </li>

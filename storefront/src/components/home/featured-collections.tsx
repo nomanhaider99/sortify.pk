@@ -99,7 +99,7 @@ export function FeaturedCollections({ tabs }: { tabs: CollectionTab[] }) {
           <div className="mt-12 text-center">
             <Link
               href={routes.category(current.slug)}
-              className="group text-ink inline-flex items-center gap-2 text-sm tracking-[0.08em] uppercase"
+              className="group text-ink inline-flex min-h-11 items-center gap-2 text-sm tracking-[0.08em] uppercase"
             >
               Shop all {current.name}
               <ArrowRight

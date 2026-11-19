@@ -75,7 +75,7 @@ export function ProductView({
 
   return (
     <>
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16">
         <div ref={galleryRef}>
           <ProductGallery
             images={product.images}
@@ -90,7 +90,7 @@ export function ProductView({
           {ratingCount > 0 ? (
             <a
               href="#reviews"
-              className="mt-3 inline-flex items-center gap-2 text-sm hover:underline"
+              className="mt-3 inline-flex min-h-6 items-center gap-2 text-sm hover:underline"
             >
               <Stars rating={ratingAvg} />
               <span className="text-ink-muted">

@@ -40,7 +40,7 @@ export async function ListingPage({
             <li key={b.label} className="flex items-center gap-2">
               {i > 0 ? <span aria-hidden>/</span> : null}
               {b.href ? (
-                <Link href={b.href} className="hover:text-ink">
+                <Link href={b.href} className="hover:text-ink inline-flex min-h-6 items-center">
                   {b.label}
                 </Link>
               ) : (

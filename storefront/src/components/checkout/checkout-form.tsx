@@ -292,10 +292,10 @@ export function CheckoutForm({ shipping, payments, tax }: Props) {
               {err(errors.phone?.message)}
             </div>
           </div>
-          <label className="mt-4 flex items-center gap-3 text-sm">
+          <label className="mt-4 flex min-h-10 items-center gap-3 text-sm">
             <input
               type="checkbox"
-              className="accent-primary-strong size-4"
+              className="accent-primary-strong size-5"
               {...register("newsletter")}
             />
             Email me about new collections and offers

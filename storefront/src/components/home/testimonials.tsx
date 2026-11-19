@@ -123,7 +123,7 @@ export function Testimonials({ reviews }: { reviews: Testimonial[] }) {
                   onClick={() => setIndex(i)}
                   aria-label={`Show review ${i + 1} of ${count}`}
                   aria-current={i === index}
-                  className="group flex h-6 items-center"
+                  className="group flex h-6 min-w-6 items-center justify-center"
                 >
                   <span
                     className={`block h-px transition-all duration-500 ${i === index ? "bg-on-strong w-8" : "bg-on-strong/40 group-hover:bg-on-strong/70 w-4"}`}

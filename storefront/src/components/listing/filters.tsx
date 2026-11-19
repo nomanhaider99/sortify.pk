@@ -25,10 +25,10 @@ function FilterGroups({ facets }: { facets: Facets }) {
         <legend className="mb-3 text-xs font-medium tracking-[0.12em] uppercase">
           Availability
         </legend>
-        <label className="flex cursor-pointer items-center gap-3 text-sm">
+        <label className="flex min-h-10 cursor-pointer items-center gap-3 text-sm">
           <input
             type="checkbox"
-            className="accent-primary-strong size-4"
+            className="accent-primary-strong size-5"
             checked={inStock}
             onChange={() => setValue("availability", inStock ? null : "in-stock")}
           />
@@ -40,11 +40,14 @@ function FilterGroups({ facets }: { facets: Facets }) {
         <legend className="mb-3 pt-6 text-xs font-medium tracking-[0.12em] uppercase">Price</legend>
         <div className="space-y-2.5">
           {PRICE_BUCKETS.map((b) => (
-            <label key={b.value} className="flex cursor-pointer items-center gap-3 text-sm">
+            <label
+              key={b.value}
+              className="flex min-h-10 cursor-pointer items-center gap-3 text-sm"
+            >
               <input
                 type="radio"
                 name="price"
-                className="accent-primary-strong size-4"
+                className="accent-primary-strong size-5"
                 checked={price === b.value}
                 onChange={() => setValue("price", b.value)}
                 onClick={() => price === b.value && setValue("price", null)}
@@ -85,10 +88,13 @@ function FilterGroups({ facets }: { facets: Facets }) {
                     {v.value}
                   </button>
                 ) : (
-                  <label key={v.value} className="flex cursor-pointer items-center gap-3 text-sm">
+                  <label
+                    key={v.value}
+                    className="flex min-h-10 cursor-pointer items-center gap-3 text-sm"
+                  >
                     <input
                       type="checkbox"
-                      className="accent-primary-strong size-4"
+                      className="accent-primary-strong size-5"
                       checked={sel.has(v.value)}
                       onChange={() => toggleValue(key, v.value)}
                     />

@@ -37,24 +37,38 @@ export function OrderTimeline({ status, events }: { status: OrderStatus; events:
 
   return (
     <div>
-      {/* Stepper */}
+      {/* Stepper: vertical on phones, horizontal from md up */}
       <div className="relative">
+        {/* Vertical track (mobile) */}
+        <div className="bg-border absolute top-4 bottom-4 left-4 w-px md:hidden" aria-hidden />
+        <motion.div
+          className={cn(
+            "absolute top-4 left-4 w-px origin-top md:hidden",
+            terminal ? "bg-ink-muted" : "bg-primary-strong",
+          )}
+          style={{ height: "calc(100% - 2rem)" }}
+          initial={{ scaleY: reduced ? progress : 0 }}
+          animate={{ scaleY: progress }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          aria-hidden
+        />
+        {/* Horizontal track (md+): spans the centres of the first and last of six columns */}
         <div
-          className="bg-border absolute top-4 right-4 left-4 h-px md:right-8 md:left-8"
+          className="bg-border absolute top-4 right-[calc(100%/12)] left-[calc(100%/12)] hidden h-px md:block"
           aria-hidden
         />
         <motion.div
           className={cn(
-            "absolute top-4 left-4 h-px origin-left md:left-8",
+            "absolute top-4 left-[calc(100%/12)] hidden h-px origin-left md:block",
             terminal ? "bg-ink-muted" : "bg-primary-strong",
           )}
-          style={{ width: "calc(100% - 2rem)" }}
+          style={{ width: "calc(100% * 10 / 12)" }}
           initial={{ scaleX: reduced ? progress : 0 }}
           animate={{ scaleX: progress }}
           transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
           aria-hidden
         />
-        <ol className="relative grid grid-cols-6 gap-2">
+        <ol className="relative flex flex-col gap-5 md:grid md:grid-cols-6 md:gap-2">
           {ORDER_FLOW.map((s, i) => {
             const done = i <= reachedIdx;
             const current = i === reachedIdx && !terminal;
@@ -62,12 +76,12 @@ export function OrderTimeline({ status, events }: { status: OrderStatus; events:
             return (
               <li
                 key={s}
-                className="flex flex-col items-center text-center"
+                className="flex items-center gap-4 text-left md:flex-col md:gap-0 md:text-center"
                 aria-current={current ? "step" : undefined}
               >
                 <motion.span
                   className={cn(
-                    "relative flex size-8 items-center justify-center rounded-full border text-xs",
+                    "relative flex size-8 shrink-0 items-center justify-center rounded-full border text-xs",
                     done
                       ? "bg-primary-strong border-primary-strong text-on-strong"
                       : "bg-bg border-border text-ink-muted",
@@ -86,19 +100,22 @@ export function OrderTimeline({ status, events }: { status: OrderStatus; events:
                     />
                   ) : null}
                 </motion.span>
-                <span
-                  className={cn(
-                    "mt-3 text-[0.7rem] leading-tight md:text-xs",
-                    done ? "text-ink" : "text-ink-muted",
-                  )}
-                >
-                  {ORDER_STATUS_LABELS[s]}
-                </span>
-                {ev ? (
-                  <span className="text-ink-muted mt-1 hidden text-[0.65rem] md:block">
-                    {dateFmt.format(new Date(ev.occurredAt))}
+                <span className="flex min-w-0 flex-col md:items-center">
+                  <span
+                    className={cn(
+                      "text-sm leading-tight md:mt-3 md:text-xs",
+                      done ? "text-ink" : "text-ink-muted",
+                      current && "font-medium",
+                    )}
+                  >
+                    {ORDER_STATUS_LABELS[s]}
                   </span>
-                ) : null}
+                  {ev ? (
+                    <span className="text-ink-muted mt-0.5 text-xs md:mt-1 md:text-[0.65rem]">
+                      {dateFmt.format(new Date(ev.occurredAt))}
+                    </span>
+                  ) : null}
+                </span>
                 <span className="sr-only">{done ? "completed" : "pending"}</span>
               </li>
             );
